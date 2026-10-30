@@ -70,7 +70,7 @@ export function TodaySchedule({ lessons, summary, updatedAt }: TodayScheduleProp
             </TabsList>
             <button
               type="button"
-              onClick={() => demo("Ders Takvimi", plannedScreenMessage("03"))}
+              onClick={() => demo("Ders Takvimi", plannedScreenMessage("04"))}
               className="flex shrink-0 items-center gap-1 text-label whitespace-nowrap text-fg-secondary transition-colors hover:text-fg max-lg:touch-hit @max-[599px]:hidden"
             >
               Takvim
@@ -214,7 +214,7 @@ function LessonActions({ lesson, touch }: { lesson: ScheduledLesson; touch?: boo
         </IconButton>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem onSelect={() => demo("Ders detayı", plannedScreenMessage("03"))}>
+        <DropdownMenuItem onSelect={() => demo("Ders detayı", plannedScreenMessage("06"))}>
           Ders detayı
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => demo("Yoklama al")}>Yoklama al</DropdownMenuItem>

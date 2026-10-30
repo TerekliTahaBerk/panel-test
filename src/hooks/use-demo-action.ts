@@ -2,6 +2,7 @@
 
 import { useCallback } from "react";
 import { useToast } from "@/components/ui/toast";
+import type { RoadmapPhaseId } from "@/config/roadmap";
 
 /**
  * Explicit demo state for actions that need a backend. It tells the viewer
@@ -21,7 +22,7 @@ export function useDemoAction() {
 }
 
 /** Message for navigation targets whose screen lands in a later phase. */
-export function plannedScreenMessage(phase?: string) {
+export function plannedScreenMessage(phase?: RoadmapPhaseId) {
   return phase
     ? `Bu ekran Faz ${phase} kapsamında uygulanacak.`
     : "Bu ekran sonraki bir fazda uygulanacak.";

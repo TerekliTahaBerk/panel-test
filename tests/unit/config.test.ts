@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { isPreviewEnabled } from "@/config/app";
 import { matchNavItem, roleNavigation } from "@/config/navigation";
+import { CURRENT_PHASE, ROADMAP } from "@/config/roadmap";
 import { resolveActiveNavId } from "@/components/layout/shell-context";
 import { sliceSeries } from "@/features/dashboard/components/student-progress";
 import { filterLessons } from "@/features/dashboard/components/today-schedule";
@@ -28,6 +29,17 @@ describe("role navigation config", () => {
     expect(items.length).toBeGreaterThan(0);
     expect(new Set(items.map((i) => i.id)).size).toBe(items.length);
     for (const item of items) expect(item.implemented || item.phase).toBeTruthy();
+  });
+
+  it("only references roadmap phases after the current one", () => {
+    const ids = ROADMAP.map((p) => p.id as string);
+    for (const role of WORKSPACE_ROLES) {
+      for (const item of roleNavigation[role].sections.flatMap((s) => s.items)) {
+        if (item.implemented) continue;
+        expect(ids).toContain(item.phase);
+        expect(Number(item.phase)).toBeGreaterThan(Number(CURRENT_PHASE));
+      }
+    }
   });
 
   it("never gives non-admin roles management routes", () => {

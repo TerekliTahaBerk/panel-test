@@ -285,7 +285,7 @@ function FavoriteLink({
         aria-label={collapsed ? fav.label : undefined}
         className={cn(rowBase, rowSize(collapsed, drawer, "fav"))}
         onClick={() => {
-          demo(fav.label, "Grup sayfaları Faz 02 kapsamında uygulanacak.");
+          demo(fav.label, "Grup sayfaları Faz 04 kapsamında uygulanacak.");
           onNavigate?.();
         }}
       >
@@ -381,7 +381,7 @@ function WorkspaceSwitcher({ collapsed, drawer }: { collapsed: boolean; drawer: 
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem disabled>Kurum değiştirme · Faz 01</DropdownMenuItem>
+        <DropdownMenuItem disabled>Kurum değiştirme · Faz 02</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -425,18 +425,18 @@ function AccountMenu({ collapsed, drawer }: { collapsed: boolean; drawer: boolea
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" side={drawer ? "top" : "right"} className="w-56">
         <DropdownMenuLabel>{user.name.toLocaleUpperCase("tr-TR")}</DropdownMenuLabel>
-        <DropdownMenuItem onSelect={() => demo("Profil", plannedScreenMessage("01"))}>
+        <DropdownMenuItem onSelect={() => demo("Profil", plannedScreenMessage("03"))}>
           <UserRound />
           Profil
         </DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => demo("Hesap ayarları", plannedScreenMessage("01"))}>
+        <DropdownMenuItem onSelect={() => demo("Hesap ayarları", plannedScreenMessage("03"))}>
           <Settings />
           Hesap ayarları
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem disabled>
           <LogOut />
-          Çıkış yap · Faz 01
+          Çıkış yap · Faz 03
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

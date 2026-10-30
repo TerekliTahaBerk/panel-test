@@ -19,6 +19,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { WorkspaceRole } from "@/types/roles";
+import type { RoadmapPhaseId } from "./roadmap";
 
 /**
  * Role-aware sidebar configuration. One sidebar component renders all roles;
@@ -27,6 +28,12 @@ import type { WorkspaceRole } from "@/types/roles";
  * `href` is the future route segment relative to the workspace root
  * (e.g. `/app/[org]/ogrenciler`). `implemented` marks screens that exist in
  * the current phase; the rest render normally but explain they are planned.
+ *
+ * `phase` follows the approved roadmap (docs/phases/README.md): screens that
+ * exist in the approved prototype are delivered by Phase 04 (Complete
+ * Frontend Implementation); screens without a prototype arrive with their
+ * domain phase (03 Auth & Permissions, 05 Onboarding, 06 Academic,
+ * 07 Student & Parent Services, 08 Exams & Analytics).
  *
  * This decides what is SHOWN, never what is ALLOWED. Server-side
  * authorization remains the boundary.
@@ -41,8 +48,8 @@ export interface NavItem {
   href: string;
   count?: number;
   implemented?: boolean;
-  /** Phase in which the screen is planned to land. */
-  phase?: string;
+  /** Roadmap phase that delivers the screen (two digits, e.g. "04"). */
+  phase?: RoadmapPhaseId;
 }
 
 export type IdentityTone = "blue" | "green" | "purple" | "amber";
@@ -82,37 +89,37 @@ export const roleNavigation: Record<WorkspaceRole, RoleNavigation> = {
             icon: GraduationCap,
             href: "/ogrenciler",
             count: 248,
-            phase: "02",
+            phase: "04",
           },
           {
             id: "ogretmenler",
             label: "Öğretmenler",
             icon: Presentation,
             href: "/ogretmenler",
-            phase: "02",
+            phase: "06",
           },
           {
             id: "gruplar",
             label: "Sınıflar ve Gruplar",
             icon: Users,
             href: "/gruplar",
-            phase: "02",
+            phase: "04",
           },
-          { id: "takvim", label: "Ders Takvimi", icon: Calendar, href: "/takvim", phase: "03" },
+          { id: "takvim", label: "Ders Takvimi", icon: Calendar, href: "/takvim", phase: "04" },
           {
             id: "odevler",
             label: "Ödevler",
             icon: ClipboardList,
             href: "/odevler",
             count: 14,
-            phase: "03",
+            phase: "04",
           },
           {
             id: "denemeler",
             label: "Deneme Sınavları",
             icon: FileText,
             href: "/denemeler",
-            phase: "04",
+            phase: "08",
           },
           { id: "analiz", label: "Analizler", icon: ChartLine, href: "/analizler", phase: "04" },
           {
@@ -120,7 +127,7 @@ export const roleNavigation: Record<WorkspaceRole, RoleNavigation> = {
             label: "Materyaller",
             icon: BookOpen,
             href: "/materyaller",
-            phase: "03",
+            phase: "06",
           },
         ],
       },
@@ -128,10 +135,10 @@ export const roleNavigation: Record<WorkspaceRole, RoleNavigation> = {
         id: "management",
         label: "YÖNETİM",
         items: [
-          { id: "kurum", label: "Kurum Yönetimi", icon: Building2, href: "/kurum", phase: "01" },
-          { id: "uyeler", label: "Üyeler", icon: ShieldCheck, href: "/uyeler", phase: "01" },
-          { id: "abonelik", label: "Abonelik", icon: CreditCard, href: "/abonelik", phase: "05" },
-          { id: "ayarlar", label: "Ayarlar", icon: Settings, href: "/ayarlar", phase: "01" },
+          { id: "kurum", label: "Kurum Yönetimi", icon: Building2, href: "/kurum", phase: "05" },
+          { id: "uyeler", label: "Üyeler", icon: ShieldCheck, href: "/uyeler", phase: "03" },
+          { id: "abonelik", label: "Abonelik", icon: CreditCard, href: "/abonelik", phase: "04" },
+          { id: "ayarlar", label: "Ayarlar", icon: Settings, href: "/ayarlar", phase: "05" },
         ],
       },
     ],
@@ -151,13 +158,13 @@ export const roleNavigation: Record<WorkspaceRole, RoleNavigation> = {
       {
         id: "main",
         items: [
-          { id: "genel", label: "Genel Bakış", icon: LayoutGrid, href: "", phase: "02" },
+          { id: "genel", label: "Genel Bakış", icon: LayoutGrid, href: "", phase: "04" },
           {
             id: "derslerim",
             label: "Derslerim",
             icon: Presentation,
             href: "/derslerim",
-            phase: "03",
+            phase: "06",
           },
           {
             id: "ogrenciler",
@@ -165,44 +172,44 @@ export const roleNavigation: Record<WorkspaceRole, RoleNavigation> = {
             icon: GraduationCap,
             href: "/ogrenciler",
             count: 86,
-            phase: "02",
+            phase: "04",
           },
-          { id: "gruplar", label: "Gruplarım", icon: Users, href: "/gruplar", phase: "02" },
-          { id: "takvim", label: "Takvim", icon: Calendar, href: "/takvim", phase: "03" },
+          { id: "gruplar", label: "Gruplarım", icon: Users, href: "/gruplar", phase: "04" },
+          { id: "takvim", label: "Takvim", icon: Calendar, href: "/takvim", phase: "04" },
           {
             id: "odevler",
             label: "Ödevler",
             icon: ClipboardList,
             href: "/odevler",
             count: 9,
-            phase: "03",
+            phase: "04",
           },
           {
             id: "materyal",
             label: "Materyaller",
             icon: BookOpen,
             href: "/materyaller",
-            phase: "03",
+            phase: "06",
           },
           {
             id: "denemeler",
             label: "Deneme Sonuçları",
             icon: FileText,
             href: "/denemeler",
-            phase: "04",
+            phase: "08",
           },
           {
             id: "gelisim",
             label: "Öğrenci Gelişimi",
             icon: TrendingUp,
             href: "/gelisim",
-            phase: "04",
+            phase: "08",
           },
         ],
       },
       {
         id: "settings",
-        items: [{ id: "ayarlar", label: "Ayarlar", icon: Settings, href: "/ayarlar", phase: "01" }],
+        items: [{ id: "ayarlar", label: "Ayarlar", icon: Settings, href: "/ayarlar", phase: "03" }],
       },
     ],
     favorites: {
@@ -222,45 +229,45 @@ export const roleNavigation: Record<WorkspaceRole, RoleNavigation> = {
       {
         id: "main",
         items: [
-          { id: "genel", label: "Ana Sayfa", icon: House, href: "", phase: "02" },
-          { id: "program", label: "Ders Programım", icon: Calendar, href: "/program", phase: "03" },
+          { id: "genel", label: "Ana Sayfa", icon: House, href: "", phase: "04" },
+          { id: "program", label: "Ders Programım", icon: Calendar, href: "/program", phase: "04" },
           {
             id: "odevler",
             label: "Ödevlerim",
             icon: ClipboardList,
             href: "/odevler",
             count: 3,
-            phase: "03",
+            phase: "04",
           },
           {
             id: "materyal",
             label: "Materyallerim",
             icon: BookOpen,
             href: "/materyaller",
-            phase: "03",
+            phase: "07",
           },
           {
             id: "denemeler",
             label: "Deneme Sonuçlarım",
             icon: FileText,
             href: "/denemeler",
-            phase: "04",
+            phase: "08",
           },
-          { id: "gelisim", label: "Gelişimim", icon: TrendingUp, href: "/gelisim", phase: "04" },
-          { id: "hedef", label: "Hedeflerim", icon: Target, href: "/hedefler", phase: "04" },
+          { id: "gelisim", label: "Gelişimim", icon: TrendingUp, href: "/gelisim", phase: "07" },
+          { id: "hedef", label: "Hedeflerim", icon: Target, href: "/hedefler", phase: "07" },
           {
             id: "bildirim",
             label: "Bildirimler",
             icon: Bell,
             href: "/bildirimler",
             count: 2,
-            phase: "03",
+            phase: "07",
           },
         ],
       },
       {
         id: "settings",
-        items: [{ id: "ayarlar", label: "Ayarlar", icon: Settings, href: "/ayarlar", phase: "01" }],
+        items: [{ id: "ayarlar", label: "Ayarlar", icon: Settings, href: "/ayarlar", phase: "03" }],
       },
     ],
     favorites: {
@@ -280,29 +287,29 @@ export const roleNavigation: Record<WorkspaceRole, RoleNavigation> = {
       {
         id: "main",
         items: [
-          { id: "genel", label: "Genel Bakış", icon: LayoutGrid, href: "", phase: "02" },
-          { id: "cocuklar", label: "Çocuklarım", icon: Users, href: "/cocuklarim", phase: "02" },
-          { id: "takvim", label: "Ders Takvimi", icon: Calendar, href: "/takvim", phase: "03" },
+          { id: "genel", label: "Genel Bakış", icon: LayoutGrid, href: "", phase: "04" },
+          { id: "cocuklar", label: "Çocuklarım", icon: Users, href: "/cocuklarim", phase: "07" },
+          { id: "takvim", label: "Ders Takvimi", icon: Calendar, href: "/takvim", phase: "04" },
           {
             id: "gelisim",
             label: "Akademik Gelişim",
             icon: TrendingUp,
             href: "/gelisim",
-            phase: "04",
+            phase: "07",
           },
           {
             id: "odevler",
             label: "Ödev Takibi",
             icon: ClipboardList,
             href: "/odevler",
-            phase: "03",
+            phase: "07",
           },
           {
             id: "denemeler",
             label: "Deneme Sonuçları",
             icon: FileText,
             href: "/denemeler",
-            phase: "04",
+            phase: "08",
           },
           {
             id: "bildirim",
@@ -310,13 +317,13 @@ export const roleNavigation: Record<WorkspaceRole, RoleNavigation> = {
             icon: Bell,
             href: "/bildirimler",
             count: 1,
-            phase: "03",
+            phase: "07",
           },
         ],
       },
       {
         id: "settings",
-        items: [{ id: "ayarlar", label: "Ayarlar", icon: Settings, href: "/ayarlar", phase: "01" }],
+        items: [{ id: "ayarlar", label: "Ayarlar", icon: Settings, href: "/ayarlar", phase: "03" }],
       },
     ],
     favorites: {

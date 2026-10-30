@@ -12,7 +12,8 @@ export default function HomePage() {
         <div>
           <h1 className="m-0 text-title font-semibold">{appConfig.name}</h1>
           <p className="mt-1 mb-0 text-body text-fg-secondary">
-            Faz 00 — ön yüz temeli. Kimlik doğrulama ve kurum çalışma alanları Faz 01 ile gelecek.
+            Faz 00 — temel ve tasarım entegrasyonu. Kurum çalışma alanları Faz 02, kimlik doğrulama
+            Faz 03 ile gelecek.
           </p>
         </div>
         {preview ? (
