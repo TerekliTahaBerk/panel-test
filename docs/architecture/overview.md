@@ -17,14 +17,20 @@ the mobile drawer (Radix Dialog, below `lg` = 1024px), the ⌘K command palette 
 Pages render their own `Topbar` so they can inject page controls (date range).
 
 **Navigation** is configuration (`src/config/navigation.ts`): one `RoleNavigation` per
-workspace role (sections, items, favorites). Items carry `implemented` and a planned `phase`;
-unimplemented targets show an explicit "planned" notice. Super Admin will get a separate
-platform console, not a workspace role config.
+workspace role (sections, items, favorites). Items carry `implemented` and the roadmap
+`phase` that delivers them (typed against `src/config/roadmap.ts`); unimplemented targets
+show an explicit "planned" notice. Super Admin gets a separate platform console in
+Phase 10, not a workspace role config.
+
+**Active navigation** is resolved by `matchNavItem()` with segment-aware prefix matching:
+the workspace root matches only itself, other entries match their path and anything nested
+under it (`/ogrenciler/123` → Öğrenciler, but not `/ogrenciler-arsiv`), the most specific
+href wins, and unknown paths highlight nothing.
 
 **Workspace context** (`features/workspace/types.ts`): `{ role, organization, user, isDemo }`.
-Today it comes from `preview-workspace.mock.ts`. In Phase 01 the same shape is produced
-server-side from the session + organization membership and passed into the same shell —
-no component rewrite.
+Today it comes from `preview-workspace.mock.ts`. From Phase 02 (organization) and Phase 03
+(session, membership, role) the same shape is produced server-side and passed into the same
+shell — no component rewrite.
 
 **Features** own their components, types and mock data. Components receive data via props;
 no business data is hard-coded in reusable UI.
@@ -38,16 +44,17 @@ in `globals.css` (`@theme inline`), so utilities like `bg-sidebar`, `text-fg-sec
 | Route                      | Purpose                                                             | Phase |
 | -------------------------- | ------------------------------------------------------------------- | ----- |
 | `/preview/*`               | Demo screens with fictional data, gated                             | 00    |
-| `/giris`, `/kayit`         | Auth                                                                | 01    |
-| `/app/[orgSlug]`           | Workspace root; resolves membership + role server-side              | 01    |
-| `/app/[orgSlug]/<segment>` | Segments from `navigation.ts` hrefs (`/ogrenciler`, `/takvim`, ...) | 02+   |
-| `/admin/*`                 | Super Admin console (separate layout, separate auth check)          | later |
+| `/app/[orgSlug]`           | Workspace root; organization resolved and scoped server-side        | 02    |
+| `/giris`, `/kayit`         | Authentication                                                      | 03    |
+| `/app/[orgSlug]/<segment>` | Segments from `navigation.ts` hrefs (`/ogrenciler`, `/takvim`, ...) | 04+   |
+| `/kurulum`                 | Organization onboarding                                             | 05    |
+| `/admin/*`                 | Super Admin console (separate layout, separate auth check)          | 10    |
 
 The workspace layout will: authenticate → load membership for `orgSlug` → 404 if none →
 build `WorkspaceContext` → render `AppShell`. Every data loader and mutation re-checks
 membership and role on the server.
 
-## Future system boundaries (pending Phase 01 validation)
+## Future system boundaries (pending Phase 01: Architecture & Domain Modeling)
 
 Domain concepts: User, Organization, OrganizationMembership (user × org × role), Branch,
 Role, Student, Teacher, ParentStudentRelationship, Group, Lesson, Attendance, Assignment,
@@ -57,10 +64,12 @@ Working assumptions (see ADR-0001, to be confirmed in Phase 01):
 
 1. Single Next.js application (modular monolith); route handlers / server actions as the API.
 2. One relational database (PostgreSQL) with an `organizationId` on every tenant-owned row,
-   enforced in a data-access layer (and evaluated for row-level security).
-3. A User may belong to several organizations with different roles; role is per membership.
-4. Parents link to students through `ParentStudentRelationship`, scoped to one organization.
-5. Billing is per organization (Subscription), added after core flows.
+   enforced in a data-access layer (and evaluated for row-level security) — built in Phase 02.
+3. A User may belong to several organizations with different roles; role is per membership,
+   enforced on the server — Phase 03.
+4. Parents link to students through `ParentStudentRelationship`, scoped to one organization —
+   Phase 07.
+5. Billing is per organization (Subscription) — Phase 09.
 
 No schema, migrations or database connections exist in Phase 00.
 

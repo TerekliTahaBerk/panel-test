@@ -11,26 +11,35 @@ pure white (`#FFFFFF`) with a `#F9F9F8` sidebar.
 
 ## Screen inventory
 
-| #   | Artboard        | Screen                             | Role                        | Planned route                            | Phase                                |
-| --- | --------------- | ---------------------------------- | --------------------------- | ---------------------------------------- | ------------------------------------ |
-| 01  | `Main`          | Kurum Yöneticisi — Genel Bakış     | Org Admin                   | `/app/[org]` (preview: `/preview/admin`) | **00 ✅**                            |
-| 02  | `Teacher`       | Öğretmen — Genel Bakış             | Teacher                     | `/app/[org]`                             | 02                                   |
-| 03  | `Student`       | Öğrenci — Ana Sayfa                | Student                     | `/app/[org]`                             | 02                                   |
-| 04  | `Parent`        | Veli — Genel Bakış                 | Parent                      | `/app/[org]`                             | 02                                   |
-| 05  | `Students`      | Öğrenci Yönetimi                   | Org Admin, Teacher          | `/app/[org]/ogrenciler`                  | 02                                   |
-| 06  | `StudentDetail` | Öğrenci Detayı                     | Org Admin, Teacher          | `/app/[org]/ogrenciler/[id]`             | 02                                   |
-| 07  | `Groups`        | Sınıflar ve Gruplar                | Org Admin, Teacher          | `/app/[org]/gruplar`                     | 02                                   |
-| 08  | `Calendar`      | Ders Takvimi                       | All workspace roles         | `/app/[org]/takvim`                      | 03                                   |
-| 09  | `Assignments`   | Ödevler                            | Org Admin, Teacher, Student | `/app/[org]/odevler`                     | 03                                   |
-| 10  | `Analytics`     | Analizler                          | Org Admin                   | `/app/[org]/analizler`                   | 04                                   |
-| 11  | `Onboarding`    | Kurum Kurulumu                     | Org Admin (new org)         | `/kurulum`                               | 01                                   |
-| 12  | `Subscription`  | Abonelik                           | Org Admin                   | `/app/[org]/abonelik`                    | 05                                   |
-| 13  | `Mobile`        | Mobil — Yönetici Paneli            | Org Admin (≤ 760px)         | responsive `/app/[org]`                  | **00 ✅** (responsive behavior)      |
-| 14  | `DesignSystem`  | Tasarım Sistemi                    | —                           | tokens/components (this repo)            | **00 ✅** (tokens + core components) |
-| 15  | `Login`         | Giriş Yap                          | Public                      | `/giris`                                 | 01                                   |
-| —   | `Sidebar`       | Kenar Çubuğu (rol bazlı) component | All                         | `components/navigation/sidebar.tsx`      | **00 ✅** (all 4 role configs)       |
+Phases follow the approved roadmap ([docs/phases/README.md](../phases/README.md)).
+"UI" is the phase that delivers the screen as real routes and components; "Live data" is
+the phase that connects it to real, organization-scoped data.
 
-Super Admin has no prototype screen yet; it will get a separate console design.
+| #   | Artboard        | Screen                             | Role                        | Planned route                            | UI                         | Live data         |
+| --- | --------------- | ---------------------------------- | --------------------------- | ---------------------------------------- | -------------------------- | ----------------- |
+| 01  | `Main`          | Kurum Yöneticisi — Genel Bakış     | Org Admin                   | `/app/[org]` (preview: `/preview/admin`) | **00 ✅** (preview)        | 06 (+ 08 metrics) |
+| 02  | `Teacher`       | Öğretmen — Genel Bakış             | Teacher                     | `/app/[org]`                             | 04                         | 06                |
+| 03  | `Student`       | Öğrenci — Ana Sayfa                | Student                     | `/app/[org]`                             | 04                         | 07                |
+| 04  | `Parent`        | Veli — Genel Bakış                 | Parent                      | `/app/[org]`                             | 04                         | 07                |
+| 05  | `Students`      | Öğrenci Yönetimi                   | Org Admin, Teacher          | `/app/[org]/ogrenciler`                  | 04                         | 06                |
+| 06  | `StudentDetail` | Öğrenci Detayı                     | Org Admin, Teacher          | `/app/[org]/ogrenciler/[id]`             | 04                         | 06                |
+| 07  | `Groups`        | Sınıflar ve Gruplar                | Org Admin, Teacher          | `/app/[org]/gruplar`                     | 04                         | 06                |
+| 08  | `Calendar`      | Ders Takvimi                       | All workspace roles         | `/app/[org]/takvim`                      | 04                         | 06                |
+| 09  | `Assignments`   | Ödevler                            | Org Admin, Teacher, Student | `/app/[org]/odevler`                     | 04                         | 06                |
+| 10  | `Analytics`     | Analizler                          | Org Admin                   | `/app/[org]/analizler`                   | 04                         | 08                |
+| 11  | `Onboarding`    | Kurum Kurulumu                     | Org Admin (new org)         | `/kurulum`                               | 05                         | 05                |
+| 12  | `Subscription`  | Abonelik                           | Org Admin                   | `/app/[org]/abonelik`                    | 04                         | 09                |
+| 13  | `Mobile`        | Mobil — Yönetici Paneli            | Org Admin (≤ 760px)         | responsive `/app/[org]`                  | **00 ✅** (responsive)     | 06                |
+| 14  | `DesignSystem`  | Tasarım Sistemi                    | —                           | tokens/components (this repo)            | **00 ✅** (tokens + core)  | —                 |
+| 15  | `Login`         | Giriş Yap                          | Public                      | `/giris`                                 | 03                         | 03                |
+| —   | `Sidebar`       | Kenar Çubuğu (rol bazlı) component | All                         | `components/navigation/sidebar.tsx`      | **00 ✅** (4 role configs) | 03 (real roles)   |
+
+Login and Onboarding are flows rather than workspace screens, so they ship with their own
+phases (03 and 05) instead of Phase 04. Navigation entries without a prototype screen
+(Öğretmenler, Deneme Sınavları, Materyaller, Kurum Yönetimi, Üyeler, Ayarlar, ...) are
+delivered by their domain phase; see the `phase` values in `src/config/navigation.ts`.
+
+Super Admin has no prototype screen yet; its console is designed and built in Phase 10.
 
 ## Design tokens (extracted)
 

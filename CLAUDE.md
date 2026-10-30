@@ -6,19 +6,28 @@ Persistent instructions for Claude Code (and humans) working in this repository.
 
 - This repo is an independent product. **Never** modify, push to, or connect to Online
   Dershanem (its repository, database, deployments or services). Read it only for reference.
-- Do not copy its Prisma schema or legacy data model wholesale; new models are designed for
-  multi-tenancy in Phase 01.
+- Do not copy its Prisma schema or legacy data model wholesale; the new domain model is
+  designed in Phase 01 for the multi-tenant infrastructure of Phase 02.
 - Do not commit exported prototype bundles, embedded font binaries, credentials, `.env*`
   files (except `.env.example`) or build output.
 
 ## Phase-by-phase policy
 
-- Work happens in numbered phases (`docs/phases/phase-NN.md`). Only build what the current
-  phase defines. Record decisions as ADRs in `docs/decisions/`.
+- Work happens in numbered phases following the approved roadmap in
+  `docs/phases/README.md` (mirrored in `src/config/roadmap.ts`): 00 Foundation & Design
+  Integration · 01 Architecture & Domain Modeling · 02 Multi-Tenant Infrastructure ·
+  03 Authentication & Permissions · 04 Complete Frontend Implementation · 05 Organization
+  Onboarding · 06 Academic Management · 07 Student & Parent Services · 08 Exams & Analytics ·
+  09 Subscriptions & Billing · 10 Super Admin & Operations · 11 Security, QA & Production
+  Launch.
+- Only build what the current phase defines; each phase has `docs/phases/phase-NN.md`.
+  Record decisions as ADRs in `docs/decisions/`. When the roadmap changes, update
+  `roadmap.ts`, the `phase` values in `navigation.ts`, README, the reference map and the
+  architecture overview together.
 - Each phase doc keeps: objectives, checklist, completed work, validation evidence, open
   issues, acceptance criteria. Never mark a criterion done without evidence.
 - Not in scope until a phase asks for it: microservices, monorepo tooling, Redis, workers,
-  payment or auth providers, production database connections.
+  payment or auth providers (Phase 03 / 09), production database connections (Phase 02).
 
 ## Coding conventions
 
@@ -52,7 +61,8 @@ Persistent instructions for Claude Code (and humans) working in this repository.
 - Neutral-first palette; semantic colors only on dots, small text and data.
 - Geist Sans only (weights 400/500/600); `tabular` utility for numbers.
 - Verify against screenshots at 1440 / 1280 / 768 / 390. No horizontal page overflow; touch
-  targets ≥ 44px below `lg`.
+  targets ≥ 44×44px below `lg` (use `max-lg:touch-hit` to enlarge the hit area of compact
+  controls without changing their look; `tests/e2e/touch-targets.spec.ts` audits this).
 - Actions that need a backend use `useDemoAction()` (explicit "nothing was saved" notice).
   No fake success, no dead buttons.
 

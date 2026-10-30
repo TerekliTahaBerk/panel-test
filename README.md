@@ -5,18 +5,29 @@ private tutors, coaches, tutoring centers, private institutions and high schools
 
 Customer-facing roles: **Organization Administrator**, **Teacher**, **Student**, **Parent**.
 An internal **Super Admin** role operates the platform. Each organization's data is strictly
-isolated (multi-tenancy arrives in Phase 01).
+isolated (multi-tenant infrastructure arrives in Phase 02, authentication in Phase 03).
 
 > This project is fully independent from Online Dershanem. That product is a read-only
 > reference for later phases; its repository, database and deployments are never modified.
 
 ## Phase status
 
-| Phase | Scope                                                          | Status                                                            |
-| ----- | -------------------------------------------------------------- | ----------------------------------------------------------------- |
-| 00    | Frontend foundation, design system, admin dashboard preview    | **Done** (see [docs/phases/phase-00.md](docs/phases/phase-00.md)) |
-| 01    | Auth, organizations, memberships, server-side authorization    | Planned                                                           |
-| 02+   | Students, teachers, groups, calendar, homework, exams, billing | Planned                                                           |
+Roadmap and scopes: [docs/phases/README.md](docs/phases/README.md).
+
+| Phase | Title                            | Status                                                                 |
+| ----- | -------------------------------- | ---------------------------------------------------------------------- |
+| 00    | Foundation & Design Integration  | **In review** (see [docs/phases/phase-00.md](docs/phases/phase-00.md)) |
+| 01    | Architecture & Domain Modeling   | Not started                                                            |
+| 02    | Multi-Tenant Infrastructure      | Not started                                                            |
+| 03    | Authentication & Permissions     | Not started                                                            |
+| 04    | Complete Frontend Implementation | Not started                                                            |
+| 05    | Organization Onboarding          | Not started                                                            |
+| 06    | Academic Management              | Not started                                                            |
+| 07    | Student & Parent Services        | Not started                                                            |
+| 08    | Exams & Analytics                | Not started                                                            |
+| 09    | Subscriptions & Billing          | Not started                                                            |
+| 10    | Super Admin & Operations         | Not started                                                            |
+| 11    | Security, QA & Production Launch | Not started                                                            |
 
 ## Stack
 
