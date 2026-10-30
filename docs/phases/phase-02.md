@@ -24,16 +24,18 @@ Faz 03 başlamadı. Online Dershanem deposu/veritabanı/servislerine erişilmedi
 
 ## Yerel doğrulama kanıtı
 
-| Kontrol                             | Sonuç                                                                         |
-| ----------------------------------- | ----------------------------------------------------------------------------- |
-| Boş DB migration + ikinci deploy    | PostgreSQL 17.10 üzerinde başarılı / no pending migrations                    |
-| Gerçek PostgreSQL güvenlik testleri | 77/77 başarılı; [tek tek matris](../security/tenant-isolation-test-matrix.md) |
-| Lint / typecheck                    | Başarılı                                                                      |
-| Unit/component                      | 29/29 başarılı                                                                |
-| Production build                    | `npm run build -- --webpack` başarılı                                         |
-| Varsayılan Turbopack                | Ortam alt süreç port izni nedeniyle EPERM; uygulama hatası olarak gizlenmedi  |
-| Format / e2e                        | Başarılı / 13 test başarılı; dört viewport screenshot incelendi               |
-| Uzak CI                             | PR açıldıktan sonra takip edilecek                                            |
+| Kontrol                             | Sonuç                                                                                                                                                                      |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Boş DB migration + ikinci deploy    | PostgreSQL 17.10 üzerinde başarılı / no pending migrations                                                                                                                 |
+| Gerçek PostgreSQL güvenlik testleri | 78/78 başarılı; [tek tek matris](../security/tenant-isolation-test-matrix.md)                                                                                              |
+| Lint / typecheck                    | Başarılı                                                                                                                                                                   |
+| Unit/component                      | 29/29 başarılı                                                                                                                                                             |
+| Production build                    | `npm run build -- --webpack` başarılı                                                                                                                                      |
+| Varsayılan Turbopack                | Ortam alt süreç port izni nedeniyle EPERM; uygulama hatası olarak gizlenmedi                                                                                               |
+| Format / e2e                        | Başarılı / 13 test başarılı; dört viewport screenshot incelendi                                                                                                            |
+| Prisma validate / migrate diff      | Başarılı / empty migration; gerçek SQL şeması uyumlu                                                                                                                       |
+| Geliştirme DB                       | Ayrı panel_local_dev kurulumu ve ikinci deploy başarılı; kota 0                                                                                                            |
+| Uzak CI                             | [Quality 41119603140](https://github.com/TerekliTahaBerk/panel-test/actions/runs/41119603140) üç iş başarılı; yerel geliştirme hazırlama ekinin yeni koşusu takip edilecek |
 
 İlk migration denemesinde function-owner devrinden sonraki GRANT ayrıcalığı actual PostgreSQL'de
 reddedildi; kalıtımı genişletmeden migration-local SET ROLE ile düzeltildi ve yeni boş DB'de
@@ -51,12 +53,12 @@ adversarial testi ayrıca eklendi.
 - [x] Gerçek auth yokken production identity/provisioning/workspace kapalı.
 - [x] Faz dışı frontend/akademik/auth/billing veya production deployment yapılmadı.
 - [ ] Son format/Playwright kontrolleri ve uzak GitHub Actions başarılı.
-- [ ] PR incelemeye açık ve URL kayıtlı; otomatik merge yok.
+- [x] [PR #4](https://github.com/TerekliTahaBerk/panel-test/pull/4) incelemeye açık; otomatik merge yok.
 
 Gerçek MFA/e-posta/session, CSRF/origin ve rate limit Faz 03/05'e aittir. Kota testi 5 kullanır;
 production policy varsayılan 0'dır. Sağlayıcı, veri bölgesi, gerçek secret provisioning, backup/PITR,
 restore, hukuki retention/purge hâlâ üretim önkoşullarıdır. RLS keyfi runtime SQL ele geçirilmesini
-tek başına çözmez. Bu fazda Üretim credential'ı veya gerçek müşteri verisi oluşturulmadı.
+tek başına çözmez. Bu fazda üretim credential'ı veya gerçek müşteri verisi oluşturulmadı.
 
 Faz 03 devri: VerifiedPrincipal'ın gerçek güven sınırını kur; revocation/authVersion/expiry,
 email/AAL2 ve 15 dakika step-up doğrula. Context'i her istekte yeniden çöz. Gelecek mutations;

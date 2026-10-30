@@ -34,7 +34,7 @@ import { runtimeClient } from "@/server/db/client";
 import { createOrganizationWithOwner } from "@/server/modules/provisioning/service";
 import { connectionString } from "@/server/db/config";
 import { safeDatabaseError } from "@/server/db/errors";
-import { testDestination } from "../../scripts/database/safety";
+import { testDestination, localDestination } from "../../scripts/database/safety";
 const slugA = `fixture-alpha-${randomUUID()}`;
 const slugB = `fixture-beta-${randomUUID()}`;
 let a: string,
@@ -842,6 +842,12 @@ describe("Üretim kapıları ve güvenli hatalar", () => {
     it("güvensiz test/reset hedefi reddi", () => {
       expect(() => testDestination(raw)).toThrow();
     });
+  it("geliştirme ve test hedefleri birbirine karıştırılamaz", () => {
+    const base = "postgresql://panel_bootstrap:synthetic@127.0.0.1:55432/";
+    expect(() => testDestination(base + "panel_local_dev")).toThrow();
+    expect(() => localDestination(base + "panel_local_test")).toThrow();
+    expect(localDestination(base + "panel_local_dev").pathname).toBe("/panel_local_dev");
+  });
   it("runtime config migrator/default bağlantısına düşmez", () => {
     const previous = process.env.DATABASE_URL;
     try {

@@ -44,6 +44,7 @@ ENABLE_PREVIEW_ROUTES=true değilse 404 döner. Bu ayar kimlik veya tenant eriş
 | `npm test`                                | Unit/component testleri                                                  |
 | `npm run test:e2e`                        | Production build üzerinde preview ve workspace sınırı testleri           |
 | `npm run db:up` / `db:ready` / `db:down`  | İzole Docker PostgreSQL başlat / kontrol / durdur                        |
+| `npm run db:local:prepare`                | Sabit panel_local_dev geliştirme DB'si + roller + migration              |
 | `npm run db:test:prepare`                 | Yeni, doğrulanmış test DB'si + roller + migration; mevcut DB resetlenmez |
 | `npm run db:generate` / `db:migrate`      | Prisma Client üret / DIRECT_URL üzerinden migrate deploy                 |
 | `npm run test:integration`                | Gerçek PostgreSQL izolasyon/rol/provisioning testleri                    |

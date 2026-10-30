@@ -9,6 +9,7 @@ FK'sıyla kullanıcı eşleşmesini korur. Owner FK'sı `(id,ownerMembershipId)`
 | ------------------------- | -------------------------- | ------------------------------------------------------------------- |
 | DATABASE_URL              | panel_runtime              | PrismaPg, tek lazy singleton, en çok 5 bağlantı                     |
 | DIRECT_URL                | panel_migrator             | Yalnız Prisma CLI/migration, doğrudan bağlantı                      |
+| LOCAL_DATABASE_URL        | panel_bootstrap / postgres | Yalnız sabit panel_local_dev geliştirme bootstrap                   |
 | TEST_DATABASE_URL         | panel_bootstrap / postgres | Yalnız izole test bootstrap ve fixture                              |
 | PROVISIONING_DATABASE_URL | panel_provisioner          | Faz 03/05 için ayrılmış server-only bağlantı; üretim çağrısı kapalı |
 

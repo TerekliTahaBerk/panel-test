@@ -74,6 +74,7 @@ jobs:
           --health-cmd "pg_isready -U panel_bootstrap -d postgres"
           --health-interval 2s --health-timeout 3s --health-retries 30
     env:
+      LOCAL_DATABASE_URL: postgresql://panel_bootstrap:synthetic-ci-only@127.0.0.1:5432/panel_local_dev
       TEST_DATABASE_URL: postgresql://panel_bootstrap:synthetic-ci-only@127.0.0.1:5432/panel_ci_${{ github.run_id }}_${{ github.run_attempt }}_test
     steps:
       - uses: actions/checkout@v4
@@ -82,5 +83,6 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run db:local:prepare
       - run: npm run db:test:prepare
       - run: npm run test:integration

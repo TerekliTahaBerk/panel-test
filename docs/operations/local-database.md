@@ -8,6 +8,10 @@ npm ci
 export PANEL_LOCAL_DB_PASSWORD='yalniz-yerel-sentetik-parolaniz'
 npm run db:up
 npm run db:ready
+export LOCAL_DATABASE_URL="postgresql://panel_bootstrap:${PANEL_LOCAL_DB_PASSWORD}@127.0.0.1:55432/panel_local_dev"
+npm run db:local:prepare
+export DATABASE_URL="postgresql://panel_runtime:${PANEL_LOCAL_DB_PASSWORD}@127.0.0.1:55432/panel_local_dev"
+export DIRECT_URL="postgresql://panel_migrator:${PANEL_LOCAL_DB_PASSWORD}@127.0.0.1:55432/panel_local_dev"
 export TEST_DATABASE_URL="postgresql://panel_bootstrap:${PANEL_LOCAL_DB_PASSWORD}@127.0.0.1:55432/panel_local_001_test"
 npm run db:test:prepare
 npm run db:generate
@@ -34,3 +38,8 @@ Prisma config sessizce `.env.local` yüklemez. Next `.env.local` dosyasını ken
 2026-10-30 yerel doğrulama Docker daemon kapalı olduğu için Homebrew PostgreSQL 17.10'un
 ayrı `/private/tmp/panel-phase02-pg` cluster'ında yapıldı; aynı migration ve test komutları
 kullanıldı. Compose container başlangıcı yerelde çalıştırılmış sayılmaz; CI service bunu doğrular.
+
+`db:local:prepare` yalnız LOCAL_DATABASE_URL ve sabit `panel_local_dev` adını kabul eder.
+Geliştirme ve test DB'leri ayrıdır; ikisi de mevcut hedefi silmeden yeni DB kurar.
+Yerel geliştirme kotası 0 kalır; test kotası yalnız test hazırlayıcısı tarafından açılır.
+Tekrar kurulacak geliştirme DB'si varsa komut başarısız olur; otomatik reset yoktur.

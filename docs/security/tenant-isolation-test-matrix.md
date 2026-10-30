@@ -1,7 +1,7 @@
 # Tenant izolasyonu test matrisi
 
 Kaynak: `tests/integration/security.test.ts`; fixture'lar tamamen sentetiktir.
-2026-10-30: PostgreSQL 17.10, actual migration/grant/RLS ile **77/77 başarılı**.
+2026-10-30: PostgreSQL 17.10, actual migration/grant/RLS ile **78/78 başarılı**.
 Prisma resolver/repository testlerinde yalnız principal evidence factory'si test modülüdür;
 DB, ORM işlemleri, transaction, SQL constraint ve politikalar mock değildir.
 
@@ -84,6 +84,7 @@ DB, ORM işlemleri, transaction, SQL constraint ve politikalar mock değildir.
 | Üretim kapıları ve güvenli hatalar    | DB 08006 güvenli DEPENDENCY hatasına çevrilir                                      | Başarılı |
 | Üretim kapıları ve güvenli hatalar    | DB 22023 güvenli INVALID_INPUT hatasına çevrilir                                   | Başarılı |
 | Üretim kapıları ve güvenli hatalar    | güvensiz test/reset hedefi reddi (panel_production_test)                           | Başarılı |
+| Üretim kapıları ve güvenli hatalar    | geliştirme ve test hedefleri birbirine karıştırılamaz; ayrı allowlist              | Başarılı |
 
 ## Sonuçların anlamı
 
