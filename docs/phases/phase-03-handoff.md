@@ -42,3 +42,11 @@ Kabul: mevcut beş kontrol + Playwright login/logout/org-switch/harness kapalı/
 ## Ortam değişkenleri ve açık işler
 
 APP_ORIGIN, AUTH_ISSUER, AUTH_CLIENT_ID, AUTH_CLIENT_SECRET ve AUTH_CALLBACK_URL seçilen sağlayıcıya göre adlandırılır; Session token'ı üretmek için plaintext secret loglanmaz. Sağlayıcı saklama/aktarım şartları ve e-posta teslimi Faz 03 başlangıcında kimlik mühendisi + privacy sorumlusu tarafından kapatılır. Parola reset ve MFA lifecycle sağlayıcı seçimiyle kesinleştirilmeden production auth açılmaz.
+
+## P1 inceleme sonrası bootstrap ve junction entegrasyonu
+
+[createOrganizationWithOwner](../architecture/organization-provisioning.md) aktif tenant üyeliği istemeyen tek ilk-kurum servisidir. Auth adapter VerifiedPrincipal'ı gerçek ACTIVE User, verified email, geçerli session/authVersion ve son 15 dakika AAL2 eşdeğeri MFA step-up'tan üretir. İlk tenant yokken MFA kaydı/step-up hesap güvenliğinde çalışmalıdır; client claim veya sentetik production principal kabul edilmez. Sahip önce createOrganization servisiyle kendine rol verip sonra MFA yapamaz. Principal yetersizse DB primitive çağrılmaz. Faz 02'nin kısıtlı provisioning bağlantısı yalnız bu sunucu servisine verilir; diğer repository'lere yayılmaz. Prod onboarding route'u Faz 05'e kadar kapalı kalır.
+
+Faz 03 kabul testleri session/revoke/email/MFA/step-up eksikliği, fake actor/aal/tenant input, aynı-key güvenli retry ve resolver'ın commit sonrasında çağrılmasını kapsar. Fonksiyon sonucundan doğrudan TenantContext üretilmez. Audit ve rollback/idempotency senaryoları Faz 02 sözleşmesiyle aynı olmalıdır.
+
+OrganizationInvitationBranch surrogate id taşımaz: PK(org,invitationId,branchId); FK(org,invitationId) → OrganizationInvitation(org,id) ve FK(org,branchId) → Branch(org,id); ek I(org,branchId,invitationId). RoleAssignment/BranchMembership Faz 02'deki doğal PK'larını korur. Davet kabulü bu compound key'lerle okur/ekler; hayali org/id lookup yoktur. Bu tablolarda RLS USING/WITH CHECK tenant eşitliği ve DB FK'ları birlikte zorunludur; duplicate key, cross-tenant branch ve yetkisiz doğrudan davet çağrısı reddedilir. NotificationPreference Faz 07'de PK(org,membershipId,category,channel) + Membership FK(org,membershipId) kullanır; ek indeks gerekmez, erişim kendi üyeliğine sınırlanır. Faz 03 şimdiden bu modeli id taşıyormuş gibi varsayamaz.

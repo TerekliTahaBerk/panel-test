@@ -22,7 +22,7 @@
 - [x] Eylem ve kaynak kapsamlı [izin matrisi](../architecture/permission-matrix.md); platform/kurum ayrımı.
 - [x] Tüm önerilen modeller için alan/FK/unique/index/lifecycle/faz sözleşmesi: [DB tasarımı](../architecture/database-design.md).
 - [x] Veli mahremiyeti, export/erasure/retention ve hesap silme ayrımı: [yaşam döngüsü](../architecture/data-lifecycle.md).
-- [x] Altı küçük Mermaid mimari/ERD/istek akışı: [diyagramlar](../architecture/diagrams.md).
+- [x] Sekiz küçük Mermaid mimari/ERD/istek akışı: [diyagramlar](../architecture/diagrams.md).
 - [x] Üretim verisine erişmeyen iki senaryolu [taşıma stratejisi](../migration/migration-strategy.md).
 - [x] ADR-0002–0008 ve çapraz belge tutarlılık incelemesi.
 - [x] [Faz 02](phase-02-handoff.md) ve [Faz 03](phase-03-handoff.md) sıralı görev/test/kabul devri.
@@ -67,3 +67,37 @@ Uygulama/UI değişikliği yok; Playwright çalıştırılmadı. Mermaid kaynakl
 ## PR
 
 Başlık: `Phase 01: multi-tenant architecture and domain modeling`. Hedef main; otomatik merge yok. [PR #3 — Phase 01: multi-tenant architecture and domain modeling](https://github.com/TerekliTahaBerk/panel-test/pull/3).
+
+## Mimari inceleme — P1 bulguları ve çözümleri
+
+Bu düzeltmeler mevcut `feat/phase-01-architecture` dalında ve [PR #3](https://github.com/TerekliTahaBerk/panel-test/pull/3) içinde yapılmıştır; yeni PR/merge yoktur. Önceki kararlar korunmuş; eksik bootstrap güven sınırı ve çelişkili junction anahtar genellemesi düzeltilmiştir.
+
+| Bulgu                                           | Çözüm / kanıt                                                                                                                                                                                                                                                                        |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| P1 — İlk kurumdan önce TenantContext yok        | [createOrganizationWithOwner sözleşmesi](../architecture/organization-provisioning.md): verified principal/email + güncel AAL2/MFA; dar caller/function-owner/RLS; yeni DRAFT → ilk Membership → owner → ACTIVE + audit tek transaction. Mevcut tenant seçme/bypass parametresi yok. |
+| P1 — Junction tabloların id/U(org,id) çelişkisi | [DB sözleşmesi](../architecture/database-design.md): RoleAssignment, BranchMembership, OrganizationInvitationBranch, NotificationPreference id taşımaz. Tam PK/FK, RLS ve gerekli reverse indeksler tek tabloda; multi-tenancy, ERD ve Faz 02/03 handoff'ları eşleştirildi.          |
+| Ek — Nullable şube tutarlılığı                  | Null/null, A/A kabul; null/A, A/null, A/B ve cross-tenant red. Null-safe deferred constraint; Enrollment ve parent değişimleri, geçmiş dönem ve concurrent yazma testleri eklendi. Gereksiz nullable U(org,id,branchId) kaldırıldı; tenant FK'lar branch null olsa da zorunlu.       |
+
+İlk kurulum makbuzu için Organization'a createdByUserId + provisioningKeyHash + provisioningRequestHash ve creator/key unique sözleşmesi eklendi; yeni tablo/aktif schema oluşturulmadı. Atomik rollback, paralel request, aynı-key farklı-input conflict, yanıtı kaybolan commit, revoked/suspended replay ve audit hatası senaryoları tanımlandı. Faz 02 sentetik DB primitive testleri; Faz 03 gerçek principal/MFA adapter; Faz 05 public onboarding ayrımı korundu.
+
+Kullanıcının Vercel'i olası uygulama dağıtım platformu olarak önerdiği kaydedildi. Dağıtım/servis kurulumu yapılmadı; DB/kimlik sağlayıcı, veri bölgesi ve production altyapısı hâlâ ayrı kararlardır.
+
+### İnceleme doğrulaması
+
+Bu revizyonda komutlar yeniden çalıştırıldı:
+
+| Kontrol                                       | Sonuç                                                                                                    |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `npm run lint`                                | Başarılı, exit 0                                                                                         |
+| `npm run format:check`                        | Başarılı, exit 0                                                                                         |
+| `npm run typecheck`                           | Başarılı, exit 0                                                                                         |
+| `npm test`                                    | Başarılı, 3 dosyada 29/29                                                                                |
+| `npm run build`                               | Başarılı, mevcut route çıktısı korundu                                                                   |
+| `git diff --check` ve göreli doküman linkleri | Başarılı                                                                                                 |
+| Fiziksel model incelemesi                     | Dört junction model beş hedef belgede eşleştirildi; sekiz Mermaid kaynak bloğu metin üzerinden incelendi |
+
+Şema/servis/auth/migration/altyapı uygulanmadığından provisioning/RLS/constraint senaryoları çalışan güvenlik testi sonucu olarak sunulmaz. UI değişmedi; Playwright gerekmiyor. Kapsam yalnız dokümantasyondur.
+
+### Kalan mimari riskler
+
+Dar SECURITY DEFINER rol/grant/policy ve trusted principal adapter'ı hatalı uygulanırsa bootstrap sınırı zayıflar; Faz 02/03 adversarial test ve catalog denetimleri zorunludur. Provisioning bağlantısının ele geçirilmesi dar kurulum fonksiyonunun kötüye kullanımına yol açabilir; secret izolasyonu/kota/izleme gerekir. Yanıt kaybı retry'ı aynı key'i korumalıdır; fiziksel tenant purge öncesi eski provisioning key tombstone/retention politikası kapatılmalıdır. Nullable branch tasarımı geçmiş enrollment'ı da bağladığından otomatik şube transferi desteklenmez; bu ileriki ürün kararı olmadan gevşetilemez. Önceden listelenen sağlayıcı/sürüm, KVKK ve backup kararları açık kalır. Sahipler/deadline: bootstrap primitive güvenlik kanıtı tenant altyapı mühendisi/Faz 02; principal ve MFA kimlik mühendisi/Faz 03; kota ve retry UX ürün sahibi/Faz 05; purge/tombstone ürün+privacy sorumlusu/fiziksel purge açılmadan önce.

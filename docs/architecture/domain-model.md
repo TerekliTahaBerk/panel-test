@@ -11,7 +11,7 @@ Bu belge [veritabanı sözleşmesi](database-design.md), [izin matrisi](permissi
 7. **Bir öğrenci birden fazla gruba katılabilir.** Enrollment dönemli ilişkiyi tutar; aynı öğrenci/grup için yalnız bir açık dönem vardır. Geçmiş kayıt yeniden açılmayıp yeni dönem oluşturulur.
 8. **Grup kapasitesi** pozitif tamsayı veya null (sınırsız) olur. Dört kişilik sabit varsayım kaldırılır. Null kotayı devre dışı bırakmaz; SaaS öğrenci limiti ayrıca uygulanır. Son koltuk için kilitli transaction gerekir.
 9. **Abonelik kuruma aittir.** Tek güncel Subscription satırı ve append-only SubscriptionEvent geçmişi yeterlidir; veliye öğrenci ücreti/fatura takibi bu modelin konusu değildir.
-10. **Kurumlar arası referanslar** her tenant hedefte `(organizationId,id)` unique ve her tenant ilişkide bileşik FK ile engellenir. Sadece uygulama filtresi yeterli değildir.
+10. **Kurumlar arası referanslar** surrogate-id tenant hedeflerde `(organizationId,id)` unique, id taşımayan junction hedeflerde organizationId içeren tam doğal PK ve her tenant ilişkide bileşik FK ile engellenir. Sadece uygulama filtresi yeterli değildir.
 
 ## İş kuralları
 

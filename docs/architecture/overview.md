@@ -94,3 +94,9 @@ linked or deployed with this project.
 Okuma sırası: [alan modeli](domain-model.md) → [alan sınırları](domain-boundaries.md) → [tenant mimarisi](multi-tenancy.md) → [kimlik ve yetki](identity-authorization.md) → [izin matrisi](permission-matrix.md) → [DB sözleşmesi](database-design.md) → [mahremiyet](data-lifecycle.md) → [diyagramlar](diagrams.md).
 
 Uygulama devri: [Faz 02](../phases/phase-02-handoff.md), [Faz 03](../phases/phase-03-handoff.md). Kanıt ve kapanış: [Faz 01 raporu](../phases/phase-01.md), [legacy envanter](../migration/legacy-inventory.md), [reuse matrisi](../migration/reuse-matrix.md), [taşıma stratejisi](../migration/migration-strategy.md). Kararlar: ADR-0002–0008.
+
+### Faz 01 P1 inceleme düzeltmeleri
+
+İlk tenant için [güvenli provisioning](organization-provisioning.md) normal resolver'dan ayrılmıştır: doğrulanmış principal + güncel MFA, dar DB yetkisi/RLS ve atomik DRAFT/owner/ACTIVE. İdsiz junction doğal PK istisnaları, nullable şube enrollment testleri ve aynı fiziksel model Faz 02/03 handoff'larında eşleştirilmiştir.
+
+Kullanıcı Vercel'in olası uygulama dağıtım platformu olabileceğini belirtti. İleriki dağıtım değerlendirmesinde bu tercih dikkate alınacak; DB/kimlik sağlayıcısı veya veri bölgesi seçilmiş sayılmaz. Faz 01'de Vercel projesi, credential, bağlantı veya deployment oluşturulmadı.

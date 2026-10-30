@@ -52,6 +52,9 @@ erDiagram
   Organization {
     uuid id PK
     string slug UK
+    uuid createdByUserId FK
+    string provisioningKeyHash
+    string provisioningRequestHash
     uuid ownerMembershipId FK
   }
   OrganizationMembership {
@@ -164,3 +167,70 @@ erDiagram
 ```
 
 Subscription bir kuruma tek güncel satırdır; geçmiş event'lerle tutulur. Sınav/abonelik tabloları Faz 02 migration kapsamına girmez.
+
+## 7. İlk kurumun kurulumu (normal tenant resolver'dan ayrı)
+
+```mermaid
+sequenceDiagram
+  participant U as Faz 05 kurulum istemcisi
+  participant A as Faz 03 auth adapter
+  participant S as createOrganizationWithOwner
+  participant P as Dar provisioning DB fonksiyonu
+  participant D as PostgreSQL + role scoped RLS
+  participant R as Normal tenant resolver
+  U->>A: Oturum + doğrulanmış email + güncel MFA
+  A-->>S: VerifiedPrincipal (TenantContext yok)
+  S->>P: Normalize input + actor + idempotency key
+  P->>D: BEGIN SERIALIZABLE / actor lock / replay kontrolü
+  alt Aynı actor-key-digest kaydı yok
+    P->>D: Yeni DRAFT + ACTIVE owner Membership
+    P->>D: ownerMembershipId ata / Organization ACTIVE
+    P->>D: Audit + deferred owner constraint
+  else Geçerli tekrar
+    P->>D: Yalnız önceki işlem ve actor üyeliğini oku
+  end
+  D-->>S: COMMIT başarılı, dar sonuç
+  Note over P,D: Her adımda hata = tam ROLLBACK; replay mutation yapmaz
+  S->>R: Commit sonrası principal + slug
+  R-->>U: Normal doğrulama sonrası workspace
+```
+
+Fonksiyon existing tenant id/rol/owner almaz; caller yalnız EXECUTE, function-owner NOLOGIN/NOBYPASSRLS ve tablo sahibi değildir. Normal tenant runtime provisioning yetkisi kazanmaz. Metadata ve ayrıntılı RLS/kurtarma sözleşmesi [ilk kurum kurulumu belgesindedir](organization-provisioning.md).
+
+## 8. Junction fiziksel anahtarları (surrogate id yok)
+
+```mermaid
+erDiagram
+  OrganizationMembership ||--o{ RoleAssignment : roller
+  OrganizationMembership ||--o{ BranchMembership : kapsam
+  Branch ||--o{ BranchMembership : sube
+  OrganizationInvitation ||--o{ OrganizationInvitationBranch : davet
+  Branch ||--o{ OrganizationInvitationBranch : sube
+  OrganizationMembership ||--o{ NotificationPreference : tercih
+  RoleAssignment {
+    uuid organizationId PK
+    uuid membershipId PK
+    string role PK
+  }
+  BranchMembership {
+    uuid organizationId PK
+    uuid membershipId PK
+    uuid branchId PK
+  }
+  OrganizationInvitationBranch {
+    uuid organizationId PK
+    uuid invitationId PK
+    uuid branchId PK
+  }
+  NotificationPreference {
+    uuid organizationId PK
+    uuid membershipId PK
+    string category PK
+    string channel PK
+    boolean enabled
+  }
+```
+
+Aynı tablodaki tüm PK işaretli alanlar **tek bileşik PK** oluşturur. Tüm parent çizgileri organizationId içeren FK'dır; ayrıca Organization köküne FK vardır. id ve U(org,id) bu dört tabloda yoktur. Ek indeksler RoleAssignment(org,role,membershipId), BranchMembership(org,branchId,membershipId), OrganizationInvitationBranch(org,branchId,invitationId); NotificationPreference için PK yeterlidir. Dördünde tenant RLS USING/WITH CHECK, deny-on-missing-context ve server izinleri geçerlidir.
+
+Akademik diyagramdaki StudentRecord ve Group branch'i opsiyoneldir; Enrollment için geçerli çiftler null/null ve A/A, yasak çiftler null/A, A/null, A/B'dir. OrganizationId FK ve null-safe deferred constraint birlikte çalışır; diagramdaki opsiyonellik wildcard erişim değildir. Parent branch değişimi ve concurrent enrollment testleri [DB sözleşmesine](database-design.md) bağlıdır.
