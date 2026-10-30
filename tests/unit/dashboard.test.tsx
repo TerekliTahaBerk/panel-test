@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { adminDashboardMock } from "@/features/dashboard/data/admin-dashboard.mock";
 import { renderAdminPreview } from "../render";
@@ -74,7 +74,12 @@ describe("Organization Administrator dashboard", () => {
   it("shows an explicit demo notice instead of faking backend actions", async () => {
     const { user } = renderAdminPreview();
     await user.click(screen.getByRole("button", { name: "Yoklama al" }));
-    expect(await screen.findByText("Önizleme · Yoklama al")).toBeInTheDocument();
-    expect(screen.getByText(/hiçbir değişiklik kaydedilmez/)).toBeInTheDocument();
+    // Radix also copies the toast text into an asynchronous live announcement.
+    const announcement = await screen.findByRole("status");
+    await waitFor(() => expect(announcement).toHaveTextContent(/hiçbir değişiklik kaydedilmez/));
+
+    const notifications = screen.getByRole("region", { name: "Notifications (F8)" });
+    expect(within(notifications).getByText("Önizleme · Yoklama al")).toBeVisible();
+    expect(within(notifications).getByText(/hiçbir değişiklik kaydedilmez/)).toBeVisible();
   });
 });
