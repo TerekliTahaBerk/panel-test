@@ -96,3 +96,7 @@ tests/unit, tests/e2e     Vitest and Playwright suites
 
 See [docs/architecture/overview.md](docs/architecture/overview.md) for boundaries and
 [docs/design/reference-map.md](docs/design/reference-map.md) for the prototype inventory.
+
+## Faz 01 mimari belgeleri
+
+Çok kiracılı veri mimarisi, kimlik/kurum üyeliği ayrımı, akademik model ve izin sözleşmeleri Türkçe olarak [Faz 01 raporunda](docs/phases/phase-01.md) listelenir. Uygulama planları: [Faz 02 — altyapı](docs/phases/phase-02-handoff.md) ve [Faz 03 — kimlik ve yetkiler](docs/phases/phase-03-handoff.md). Bu faz yalnız dokümantasyondur; veritabanı, kimlik doğrulama veya API uygulaması eklenmemiştir.

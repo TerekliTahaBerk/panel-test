@@ -79,3 +79,24 @@ Reviewed at a shallow clone: Next.js 16 / React 19 / Tailwind 4 / Prisma with ~1
 split by domain (`auth`, `education`, `commerce`, ...), single-tenant user model. Useful
 later for education workflows (lessons, attendance, assignments, exams). It is not imported,
 linked or deployed with this project.
+
+## Faz 01 — Kabul edilen mimari ve alan modeli
+
+2026-10-30 tarihli bu bölüm üstteki Faz 00 varsayımlarını kesinleştirir; tarihsel bölüm korunmuştur. Modüler monolit ve mevcut sunum/tasarım sistemi devam eder. Yeni backend uygulaması bu fazda eklenmemiştir.
+
+- Tenant sınırı Organization; ortak PostgreSQL tabloları, zorunlu organizationId, bileşik FK, sunucu DAL ve RLS birlikte kullanılır.
+- Global User kimliktir; Membership kuruma aittir ve birden çok RoleAssignment taşır. Sahiplik Organization.ownerMembershipId üzerinden tek kaynaktır; OWNER rolü ayrıca tutulmaz.
+- StudentRecord ve TeacherRecord kurum kayıtlarıdır; kullanıcı hesabına zorunlu bağlı değildir. GuardianRecord ve doğrulanmış, kategori izinli ParentStudentRelationship veli erişimini belirler.
+- Şube opsiyoneldir; bireysel öğretmen şubesiz Organization açabilir. Şube erişimi kurum üyeliğinin yetkilerini daraltır.
+- WorkspaceContext sunum DTO'su olarak korunur; tek role alanı yetki mekanizması değildir. Owner/ADMIN sunumda admin'e map edilir; gerçek rol kümesi sunucuda kalır. Mevcut type yorumundaki Faz 01 server resolution ifadesi tarihsel hatadır: tenant altyapısı Faz 02, gerçek session/permission Faz 03'tedir.
+- Kurum aboneliği Faz 09'da Subscription + plan entitlements üzerinden gelir; eski bireysel ürün hakları taşınmaz.
+
+Okuma sırası: [alan modeli](domain-model.md) → [alan sınırları](domain-boundaries.md) → [tenant mimarisi](multi-tenancy.md) → [kimlik ve yetki](identity-authorization.md) → [izin matrisi](permission-matrix.md) → [DB sözleşmesi](database-design.md) → [mahremiyet](data-lifecycle.md) → [diyagramlar](diagrams.md).
+
+Uygulama devri: [Faz 02](../phases/phase-02-handoff.md), [Faz 03](../phases/phase-03-handoff.md). Kanıt ve kapanış: [Faz 01 raporu](../phases/phase-01.md), [legacy envanter](../migration/legacy-inventory.md), [reuse matrisi](../migration/reuse-matrix.md), [taşıma stratejisi](../migration/migration-strategy.md). Kararlar: ADR-0002–0008.
+
+### Faz 01 P1 inceleme düzeltmeleri
+
+İlk tenant için [güvenli provisioning](organization-provisioning.md) normal resolver'dan ayrılmıştır: doğrulanmış principal + güncel MFA, dar DB yetkisi/RLS ve atomik DRAFT/owner/ACTIVE. İdsiz junction doğal PK istisnaları, nullable şube enrollment testleri ve aynı fiziksel model Faz 02/03 handoff'larında eşleştirilmiştir.
+
+Kullanıcı Vercel'in olası uygulama dağıtım platformu olabileceğini belirtti. İleriki dağıtım değerlendirmesinde bu tercih dikkate alınacak; DB/kimlik sağlayıcısı veya veri bölgesi seçilmiş sayılmaz. Faz 01'de Vercel projesi, credential, bağlantı veya deployment oluşturulmadı.
