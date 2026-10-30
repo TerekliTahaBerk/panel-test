@@ -28,7 +28,7 @@
 - [x] [Faz 02](phase-02-handoff.md) ve [Faz 03](phase-03-handoff.md) sıralı görev/test/kabul devri.
 - [x] Backend uygulaması, aktif Prisma schema, gerçek DB, production migration veya legacy değişikliği yok.
 - [x] Mevcut beş uygulama kontrolü başarılı; gerçek sonuçlar aşağıda.
-- [ ] PR bağlantısı aşağıda tamamlanacak; otomatik merge yapılmayacak.
+- [x] PR #3 main hedefiyle açıldı; otomatik merge yapılmadı.
 
 ## Tutarlılık incelemesi
 
@@ -66,4 +66,4 @@ Uygulama/UI değişikliği yok; Playwright çalıştırılmadı. Mermaid kaynakl
 
 ## PR
 
-Başlık: `Phase 01: multi-tenant architecture and domain modeling`. Hedef main; otomatik merge yok. Bağlantı PR açılınca eklenecek.
+Başlık: `Phase 01: multi-tenant architecture and domain modeling`. Hedef main; otomatik merge yok. [PR #3 — Phase 01: multi-tenant architecture and domain modeling](https://github.com/TerekliTahaBerk/panel-test/pull/3).
