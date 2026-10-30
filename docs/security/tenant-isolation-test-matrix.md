@@ -100,3 +100,7 @@ Atomic provisioning hatalarında kalıcı Organization/Membership yoktur; replay
 CI ayrıca boş DB migration zincirini, ikinci deploy'un no-op olmasını ve bu matrisi çalıştırır.
 Playwright mevcut dört viewport preview kontrollerine ek olarak sahte HTTP kimlik başlıklarıyla
 workspace'in 401 kaldığını sınar. Gerçek login/onboarding/akademik kaynak testleri sonraki fazlardadır.
+
+Uzak kanıt: [Quality 41120118329](https://github.com/TerekliTahaBerk/panel-test/actions/runs/41120118329),
+PostgreSQL service container ve 78 test başarılı. Geliştirme DB kurulumunun kota 0 kontrolü de
+aynı işte test DB'sinden ayrı çalıştırılmıştır.

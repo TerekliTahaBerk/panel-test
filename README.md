@@ -8,12 +8,12 @@ Online Dershanem deposu, veritabanı ve servisleri bu projeye bağlı değildir 
 
 ## Faz durumu
 
-| Faz   | Kapsam                                                                             | Durum                                                                             |
-| ----- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| 00    | Temel uygulama ve tasarım entegrasyonu                                             | Tamamlandı — PR #1/#2 merged                                                      |
-| 01    | Mimari ve alan modelleme                                                           | Tamamlandı — [PR #3](https://github.com/TerekliTahaBerk/panel-test/pull/3) merged |
-| 02    | Çok kiracılı altyapı                                                               | Devam ediyor — [uygulama ve kabul kanıtları](docs/phases/phase-02.md)             |
-| 03–11 | Kimlik/yetki, ekranlar, onboarding, akademik alanlar, billing, operasyon ve üretim | Başlamadı                                                                         |
+| Faz   | Kapsam                                                                             | Durum                                                                                 |
+| ----- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| 00    | Temel uygulama ve tasarım entegrasyonu                                             | Tamamlandı — PR #1/#2 merged                                                          |
+| 01    | Mimari ve alan modelleme                                                           | Tamamlandı — [PR #3](https://github.com/TerekliTahaBerk/panel-test/pull/3) merged     |
+| 02    | Çok kiracılı altyapı                                                               | Tamamlandı; PR #4 incelemede — [uygulama ve kabul kanıtları](docs/phases/phase-02.md) |
+| 03–11 | Kimlik/yetki, ekranlar, onboarding, akademik alanlar, billing, operasyon ve üretim | Başlamadı                                                                             |
 
 Tam yol haritası: [docs/phases/README.md](docs/phases/README.md).
 
