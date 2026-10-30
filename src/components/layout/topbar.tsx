@@ -61,7 +61,7 @@ export function Topbar({ breadcrumbs, actions, notifications }: TopbarProps) {
 
       {workspace.isDemo ? (
         <Tooltip content="Bu önizleme kurgusal bir kurum ve demo verisi kullanır.">
-          <Badge variant="demo" tabIndex={0} className="hidden sm:inline-flex">
+          <Badge variant="demo" tabIndex={0} className="hidden max-lg:touch-hit sm:inline-flex">
             Demo verisi
           </Badge>
         </Tooltip>

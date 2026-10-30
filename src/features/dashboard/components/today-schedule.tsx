@@ -71,7 +71,7 @@ export function TodaySchedule({ lessons, summary, updatedAt }: TodayScheduleProp
             <button
               type="button"
               onClick={() => demo("Ders Takvimi", plannedScreenMessage("03"))}
-              className="flex shrink-0 items-center gap-1 text-label whitespace-nowrap text-fg-secondary transition-colors hover:text-fg @max-[599px]:hidden"
+              className="flex shrink-0 items-center gap-1 text-label whitespace-nowrap text-fg-secondary transition-colors hover:text-fg max-lg:touch-hit @max-[599px]:hidden"
             >
               Takvim
               <ChevronRight className="size-3.5" strokeWidth={1.8} />

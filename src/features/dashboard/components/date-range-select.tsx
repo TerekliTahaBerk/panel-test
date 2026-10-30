@@ -27,7 +27,7 @@ export function DateRangeSelect({
     <DropdownMenu>
       <DropdownMenuTrigger
         aria-label={`Tarih aralığı: ${dateRangeLabels[value]}`}
-        className="flex h-11 shrink-0 items-center gap-1.5 rounded-md px-2.5 text-label whitespace-nowrap text-fg transition-colors hover:bg-subtle data-[state=open]:bg-subtle sm:h-[30px] sm:rounded-btn-sm sm:border sm:border-line sm:bg-canvas sm:hover:border-line-strong"
+        className="flex h-11 shrink-0 items-center gap-1.5 rounded-md px-2.5 text-label whitespace-nowrap text-fg transition-colors hover:bg-subtle data-[state=open]:bg-subtle max-lg:touch-hit sm:h-[30px] sm:rounded-btn-sm sm:border sm:border-line sm:bg-canvas sm:hover:border-line-strong"
       >
         <Calendar className="size-[15px] text-fg-secondary" strokeWidth={1.8} />
         <span className="hidden sm:inline">{dateRangeLabels[value]}</span>

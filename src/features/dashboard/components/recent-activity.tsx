@@ -31,7 +31,7 @@ export function RecentActivity({ items }: { items: Activity[] }) {
         <button
           type="button"
           onClick={() => demo("Tüm aktiviteler", "Etkinlik günlüğü sonraki bir fazda uygulanacak.")}
-          className="text-label text-fg-secondary transition-colors hover:text-fg"
+          className="text-label text-fg-secondary transition-colors hover:text-fg max-lg:touch-hit"
         >
           Tümü
         </button>

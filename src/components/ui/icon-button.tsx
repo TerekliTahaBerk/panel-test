@@ -8,9 +8,9 @@ export const iconButtonVariants = cva(
   {
     variants: {
       size: {
-        sm: "size-6 rounded-sm",
-        md: "size-7 rounded-btn-sm",
-        lg: "size-[30px] rounded-btn-sm",
+        sm: "size-6 rounded-sm max-lg:touch-hit",
+        md: "size-7 rounded-btn-sm max-lg:touch-hit",
+        lg: "size-[30px] rounded-btn-sm max-lg:touch-hit",
         touch: "size-11 rounded-md",
       },
       tone: {

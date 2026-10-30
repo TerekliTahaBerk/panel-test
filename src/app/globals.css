@@ -195,6 +195,25 @@
   }
 }
 
+/*
+ * Effective touch target of at least 44×44px without changing the visual
+ * size: an invisible, centred hit area that still routes taps to the
+ * control. Used as `max-lg:touch-hit` on compact controls. Ancestors must
+ * not clip it (no overflow-hidden directly around the control).
+ */
+@utility touch-hit {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+  }
+}
+
 @utility tabular {
   font-variant-numeric: tabular-nums;
 }

@@ -14,9 +14,9 @@ export const buttonVariants = cva(
         ghost: "text-fg hover:bg-hover",
       },
       size: {
-        sm: "h-7 rounded-btn-sm px-2.5 text-meta",
-        md: "h-8 rounded-md px-3 text-label",
-        lg: "h-9 rounded-md px-3.5 text-body",
+        sm: "h-7 rounded-btn-sm px-2.5 text-meta max-lg:touch-hit",
+        md: "h-8 rounded-md px-3 text-label max-lg:touch-hit",
+        lg: "h-9 rounded-md px-3.5 text-body max-lg:touch-hit",
         touch: "h-11 rounded-lg px-4 text-body",
       },
     },

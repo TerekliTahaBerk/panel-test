@@ -31,7 +31,7 @@ export function Breadcrumbs({ items, className }: { items: Crumb[]; className?: 
                 ) : (
                   <Link
                     href={item.href}
-                    className="whitespace-nowrap text-fg-secondary transition-colors hover:text-fg"
+                    className="whitespace-nowrap text-fg-secondary transition-colors hover:text-fg max-lg:inline-flex max-lg:min-h-11 max-lg:items-center"
                   >
                     {item.label}
                   </Link>
