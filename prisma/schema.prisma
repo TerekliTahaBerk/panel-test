@@ -1,0 +1,183 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/server/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DELETION_PENDING
+  ANONYMIZED
+}
+
+enum OrganizationType {
+  INDIVIDUAL
+  CENTER
+  SCHOOL
+}
+
+enum OrganizationStatus {
+  DRAFT
+  ACTIVE
+  SUSPENDED
+  ARCHIVED
+}
+
+enum MembershipStatus {
+  ACTIVE
+  SUSPENDED
+  REVOKED
+}
+
+enum AccessScope {
+  ORGANIZATION
+  BRANCHES
+}
+
+enum OrganizationRole {
+  ADMIN
+  TEACHER
+  STUDENT
+  PARENT
+}
+
+enum BranchStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum ActorType {
+  USER
+  SYSTEM
+}
+
+model User {
+  id                   String                   @id @default(uuid()) @db.Uuid
+  emailNormalized      String?                  @unique
+  displayName          String?
+  status               UserStatus               @default(ACTIVE)
+  authVersion          Int                      @default(1)
+  createdAt            DateTime                 @default(now()) @db.Timestamptz(3)
+  updatedAt            DateTime                 @updatedAt @db.Timestamptz(3)
+  memberships          OrganizationMembership[]
+  createdOrganizations Organization[]
+  auditEvents          AuditLog[]
+
+  @@index([status, id])
+}
+
+model Organization {
+  id                      String                   @id @default(uuid()) @db.Uuid
+  slug                    String                   @unique
+  name                    String
+  type                    OrganizationType
+  status                  OrganizationStatus       @default(DRAFT)
+  ownerMembershipId       String?                  @db.Uuid
+  createdByUserId         String                   @db.Uuid
+  provisioningKeyHash     String
+  provisioningRequestHash String
+  createdAt               DateTime                 @default(now()) @db.Timestamptz(3)
+  updatedAt               DateTime                 @updatedAt @db.Timestamptz(3)
+  creator                 User                     @relation(fields: [createdByUserId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  owner                   OrganizationMembership?  @relation("Owner", fields: [id, ownerMembershipId], references: [organizationId, id], onDelete: Restrict, onUpdate: Restrict)
+  memberships             OrganizationMembership[] @relation("Members")
+  roles                   RoleAssignment[]
+  branches                Branch[]
+  branchGrants            BranchMembership[]
+  auditEvents             AuditLog[]
+
+  @@unique([createdByUserId, provisioningKeyHash])
+  @@index([status, id])
+}
+
+model OrganizationMembership {
+  id                 String             @id @default(uuid()) @db.Uuid
+  organizationId     String             @db.Uuid
+  userId             String             @db.Uuid
+  status             MembershipStatus   @default(ACTIVE)
+  accessScope        AccessScope        @default(ORGANIZATION)
+  version            Int                @default(1)
+  createdAt          DateTime           @default(now()) @db.Timestamptz(3)
+  updatedAt          DateTime           @updatedAt @db.Timestamptz(3)
+  organization       Organization       @relation("Members", fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  user               User               @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  ownedOrganizations Organization[]     @relation("Owner")
+  roles              RoleAssignment[]
+  branches           BranchMembership[]
+  auditEvents        AuditLog[]
+
+  @@unique([organizationId, id])
+  @@unique([organizationId, id, userId])
+  @@unique([organizationId, userId])
+  @@index([userId, status, organizationId])
+}
+
+model RoleAssignment {
+  organizationId String                 @db.Uuid
+  membershipId   String                 @db.Uuid
+  role           OrganizationRole
+  createdAt      DateTime               @default(now()) @db.Timestamptz(3)
+  organization   Organization           @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  membership     OrganizationMembership @relation(fields: [organizationId, membershipId], references: [organizationId, id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@id([organizationId, membershipId, role])
+  @@index([organizationId, role, membershipId])
+}
+
+model Branch {
+  id             String             @id @default(uuid()) @db.Uuid
+  organizationId String             @db.Uuid
+  code           String
+  name           String
+  status         BranchStatus       @default(ACTIVE)
+  createdAt      DateTime           @default(now()) @db.Timestamptz(3)
+  updatedAt      DateTime           @updatedAt @db.Timestamptz(3)
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  memberships    BranchMembership[]
+
+  @@unique([organizationId, id])
+  @@unique([organizationId, code])
+  @@index([organizationId, status, id])
+}
+
+model BranchMembership {
+  organizationId String                 @db.Uuid
+  membershipId   String                 @db.Uuid
+  branchId       String                 @db.Uuid
+  createdAt      DateTime               @default(now()) @db.Timestamptz(3)
+  organization   Organization           @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  membership     OrganizationMembership @relation(fields: [organizationId, membershipId], references: [organizationId, id], onDelete: Restrict, onUpdate: Restrict)
+  branch         Branch                 @relation(fields: [organizationId, branchId], references: [organizationId, id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@id([organizationId, membershipId, branchId])
+  @@index([organizationId, branchId, membershipId])
+}
+
+model AuditLog {
+  id                String                  @id @default(uuid()) @db.Uuid
+  organizationId    String                  @db.Uuid
+  actorUserId       String?                 @db.Uuid
+  actorMembershipId String?                 @db.Uuid
+  actorType         ActorType
+  entityType        String
+  entityId          String                  @db.Uuid
+  action            String
+  requestId         String                  @db.Uuid
+  metadata          Json?
+  idempotencyKey    String?
+  createdAt         DateTime                @default(now()) @db.Timestamptz(3)
+  organization      Organization            @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  actor             User?                   @relation(fields: [actorUserId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  membership        OrganizationMembership? @relation(fields: [organizationId, actorMembershipId, actorUserId], references: [organizationId, id, userId], onDelete: Restrict, onUpdate: Restrict)
+
+  @@unique([organizationId, id])
+  @@unique([organizationId, idempotencyKey])
+  @@index([organizationId, entityType, entityId, createdAt])
+  @@index([organizationId, createdAt, id])
+  @@index([actorUserId])
+  @@index([organizationId, actorMembershipId, actorUserId])
+}
