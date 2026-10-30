@@ -334,6 +334,44 @@ export function getRoleNavigation(role: WorkspaceRole): RoleNavigation {
   return roleNavigation[role];
 }
 
+function normalizePath(path: string) {
+  const withoutQuery = path.split(/[?#]/)[0] ?? "";
+  const trimmed = withoutQuery.replace(/\/+$/, "");
+  return trimmed === "" ? "/" : trimmed;
+}
+
+/**
+ * The nav item for `pathname`, matched by whole path segments:
+ * - the workspace root (`href: ""`) matches only the root itself, so unknown
+ *   paths never highlight the dashboard;
+ * - other items match their own path and anything nested under it
+ *   (`/ogrenciler/123` → Öğrenciler), never a similar prefix
+ *   (`/ogrenciler-arsiv` does not match `/ogrenciler`);
+ * - when several items match, the longest (most specific) href wins.
+ * Returns `null` when nothing matches.
+ */
+export function matchNavItem<T extends Pick<NavItem, "href">>(
+  items: readonly T[],
+  basePath: string,
+  pathname: string | null | undefined,
+): T | null {
+  if (!pathname) return null;
+  const path = normalizePath(pathname);
+  const base = normalizePath(basePath);
+  let best: T | null = null;
+  let bestLength = -1;
+  for (const item of items) {
+    const target = normalizePath(`${base === "/" ? "" : base}${item.href}`);
+    const isRoot = item.href === "";
+    const matches = isRoot ? path === target : path === target || path.startsWith(`${target}/`);
+    if (matches && target.length > bestLength) {
+      best = item;
+      bestLength = target.length;
+    }
+  }
+  return best;
+}
+
 export function findNavItem(role: WorkspaceRole, id: NavItemId): NavItem | undefined {
   return roleNavigation[role].sections.flatMap((s) => s.items).find((item) => item.id === id);
 }

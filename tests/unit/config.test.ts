@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { isPreviewEnabled } from "@/config/app";
-import { roleNavigation } from "@/config/navigation";
+import { matchNavItem, roleNavigation } from "@/config/navigation";
 import { resolveActiveNavId } from "@/components/layout/shell-context";
 import { sliceSeries } from "@/features/dashboard/components/student-progress";
 import { filterLessons } from "@/features/dashboard/components/today-schedule";
@@ -37,14 +37,50 @@ describe("role navigation config", () => {
       expect(ids).not.toContain("abonelik");
     }
   });
+});
 
-  it("resolves the active item from the path", () => {
-    expect(resolveActiveNavId(previewAdminWorkspace, "/preview/admin", "/preview/admin")).toBe(
-      "genel",
-    );
-    expect(resolveActiveNavId(previewAdminWorkspace, "/preview/admin", "/preview/admin/")).toBe(
-      "genel",
-    );
+describe("active navigation matching", () => {
+  const base = "/preview/admin";
+  const active = (path: string | null) => resolveActiveNavId(previewAdminWorkspace, base, path);
+
+  it("activates the dashboard only on the workspace root", () => {
+    expect(active("/preview/admin")).toBe("genel");
+    expect(active("/preview/admin/")).toBe("genel");
+    expect(active("/preview/admin?tab=x")).toBe("genel");
+  });
+
+  it("activates the parent entry for nested routes", () => {
+    expect(active("/preview/admin/ogrenciler")).toBe("ogrenciler");
+    expect(active("/preview/admin/ogrenciler/")).toBe("ogrenciler");
+    expect(active("/preview/admin/ogrenciler/123")).toBe("ogrenciler");
+    expect(active("/preview/admin/ogrenciler/123/notlar")).toBe("ogrenciler");
+    expect(active("/preview/admin/abonelik/faturalar")).toBe("abonelik");
+  });
+
+  it("does not match similar prefixes", () => {
+    expect(active("/preview/admin/ogrenciler-arsiv")).toBeNull();
+    expect(active("/preview/adminx")).toBeNull();
+    expect(active("/preview/administrator/ogrenciler")).toBeNull();
+  });
+
+  it("highlights nothing for unknown or foreign routes", () => {
+    expect(active("/preview/admin/bilinmeyen")).toBeNull();
+    expect(active("/preview/admin/bilinmeyen/derin")).toBeNull();
+    expect(active("/preview/teacher")).toBeNull();
+    expect(active("/")).toBeNull();
+    expect(active(null)).toBeNull();
+  });
+
+  it("prefers the most specific matching entry", () => {
+    const items = [
+      { id: "root", href: "" },
+      { id: "students", href: "/ogrenciler" },
+      { id: "archive", href: "/ogrenciler/arsiv" },
+    ];
+    expect(matchNavItem(items, base, "/preview/admin/ogrenciler/arsiv/2025")?.id).toBe("archive");
+    expect(matchNavItem(items, base, "/preview/admin/ogrenciler/arsivler")?.id).toBe("students");
+    expect(matchNavItem(items, base, "/preview/admin/ogrenciler")?.id).toBe("students");
+    expect(matchNavItem(items, `${base}/`, "/preview/admin")?.id).toBe("root");
   });
 });
 

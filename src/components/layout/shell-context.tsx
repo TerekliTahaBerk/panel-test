@@ -2,14 +2,15 @@
 
 import { usePathname } from "next/navigation";
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
-import { getRoleNavigation } from "@/config/navigation";
+import { getRoleNavigation, matchNavItem } from "@/config/navigation";
 import type { WorkspaceContext } from "@/features/workspace/types";
 
 interface ShellState {
   workspace: WorkspaceContext;
   /** Base path the workspace's nav hrefs are resolved against. */
   basePath: string;
-  activeNavId: string;
+  /** Null when the current route has no navigation entry. */
+  activeNavId: string | null;
   collapsed: boolean;
   toggleCollapsed: () => void;
   mobileNavOpen: boolean;
@@ -64,14 +65,12 @@ export function useShell() {
   return ctx;
 }
 
-/** The nav item whose resolved href matches the current path. */
+/** Id of the nav item for the current path, or null for unknown routes. */
 export function resolveActiveNavId(
   workspace: WorkspaceContext,
   basePath: string,
   pathname: string | null,
 ) {
   const items = getRoleNavigation(workspace.role).sections.flatMap((s) => s.items);
-  const normalized = (pathname ?? basePath).replace(/\/$/, "") || "/";
-  const match = items.find((item) => `${basePath}${item.href}` === normalized);
-  return match?.id ?? items[0]?.id ?? "";
+  return matchNavItem(items, basePath, pathname)?.id ?? null;
 }
