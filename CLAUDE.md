@@ -80,3 +80,14 @@ layouts or responsive behavior.
   `chore:`).
 - PRs target `main`, describe scope and validation evidence, and are never auto-merged.
   CI (`.github/workflows/quality.yml`) must be green.
+
+## Faz 02 veritabanı kuralları
+
+- Güncel faz 02'dir; 00/01 birleştirildi, Faz 03 başlamadı. Kabul kanıtı `docs/phases/phase-02.md`.
+- SQL migration kanoniktir; `prisma db push` veya otomatik DB reset kullanma.
+- Runtime yalnız panel_runtime, migration yalnız panel_migrator, provisioning yalnız dar caller rolü.
+- Root client/transaction feature koduna açılmaz; tüm protected işlemler opaque context ve scoped DAL ister.
+- Provisioning üretim servisi ve gerçek workspace kapalı kalır; preview/env/header kimlik oluşturmaz.
+- DB testleri için yalnız TEST_DATABASE_URL, loopback ve `panel_*_test`; sentetik fixture zorunludur.
+- Kod kontrollerine ek olarak `npm run test:integration` çalıştır; hazırlama ve migration adımları için
+  `docs/operations/local-database.md` dosyasını izle. URL/SQL/secret içeren ham hata loglama.

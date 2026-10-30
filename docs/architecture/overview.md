@@ -100,3 +100,17 @@ Uygulama devri: [Faz 02](../phases/phase-02-handoff.md), [Faz 03](../phases/phas
 İlk tenant için [güvenli provisioning](organization-provisioning.md) normal resolver'dan ayrılmıştır: doğrulanmış principal + güncel MFA, dar DB yetkisi/RLS ve atomik DRAFT/owner/ACTIVE. İdsiz junction doğal PK istisnaları, nullable şube enrollment testleri ve aynı fiziksel model Faz 02/03 handoff'larında eşleştirilmiştir.
 
 Kullanıcı Vercel'in olası uygulama dağıtım platformu olabileceğini belirtti. İleriki dağıtım değerlendirmesinde bu tercih dikkate alınacak; DB/kimlik sağlayıcısı veya veri bölgesi seçilmiş sayılmaz. Faz 01'de Vercel projesi, credential, bağlantı veya deployment oluşturulmadı.
+
+## Faz 02 — Uygulanan altyapı
+
+Faz 00/01 PR'ları birleştirildi. PostgreSQL 17.10 + Prisma 7.10.1 çekirdeği,
+bileşik FK/doğal junction PK, FORCE RLS, ayrı DB rolleri ve transaction-local TenantContext
+uygulandı. İlk kurum için ayrı least-privilege SECURITY DEFINER primitive'i vardır;
+gerçek principal adapter ve üretim provisioning servisi kapalıdır. Akademik/auth tabloları yoktur.
+
+Çalışan sözleşmeler: [DB runtime](database-runtime.md), [tenant context](tenant-context.md),
+[RLS](rls-implementation.md), [provisioning](provisioning-implementation.md).
+Operasyon: [yerel DB](../operations/local-database.md), [migration](../operations/migrations.md).
+Kabul kanıtı: [Faz 02](../phases/phase-02.md), [test matrisi](../security/tenant-isolation-test-matrix.md).
+Mevcut frontend/preview tasarımı korunur; `/app/[orgSlug]` 401/no-store döndüren kapalı server
+sınırıdır. Faz 03 başlamadı; canlı auth, MFA veya tenant işlemi çalışıyor diye sunulmaz.
