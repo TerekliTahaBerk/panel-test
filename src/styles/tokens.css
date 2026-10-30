@@ -1,0 +1,97 @@
+/*
+ * Design tokens — extracted from the approved prototype
+ * (screen "14 Tasarım Sistemi" and the admin dashboard).
+ * Neutral-first: every screen must read correctly in grayscale.
+ * Semantic colors appear only on dots, small text and data.
+ */
+:root {
+  /* Surfaces */
+  --ds-color-bg-canvas: #ffffff;
+  --ds-color-bg-sidebar: #f9f9f8;
+  --ds-color-bg-subtle: #f7f7f7;
+  --ds-color-bg-row-hover: #fafafa;
+  --ds-color-bg-hover: #f0f0ef;
+  --ds-color-bg-selected: #ececeb;
+  --ds-color-bg-chip: #f4f4f3;
+  --ds-color-bg-avatar: #ededec;
+  --ds-color-bg-avatar-strong: #e4e4e2;
+
+  /* Text */
+  --ds-color-fg: #171717;
+  --ds-color-fg-secondary: #6b6b6b;
+  --ds-color-fg-muted: #929292; /* placeholders, kbd hints, chevrons, axes only (3.1:1) */
+  --ds-color-fg-subtle: #3d3d3d;
+  --ds-color-fg-avatar: #4a4a4a;
+  --ds-color-fg-inverse: #ffffff;
+  --ds-color-fg-separator: #c4c4c4;
+
+  /* Lines */
+  --ds-color-line: #eaeaea;
+  --ds-color-line-strong: #dddddd;
+  --ds-color-line-row: #f1f1f0;
+  --ds-color-line-kbd: #e4e4e3;
+
+  /* Primary (neutral) */
+  --ds-color-primary: #171717;
+  --ds-color-primary-hover: #2a2a2a;
+
+  /* Semantic */
+  --ds-color-success-fg: #1f7a4d;
+  --ds-color-success-dot: #1f9d5c;
+  --ds-color-success-tint: #e6f2ec;
+  --ds-color-warning-fg: #9a5b00;
+  --ds-color-warning-dot: #d98a00;
+  --ds-color-warning-tint: #fbf3e2;
+  --ds-color-danger-fg: #b42318;
+  --ds-color-danger-dot: #d92d20;
+  --ds-color-danger-tint: #fdecea;
+  --ds-color-info-fg: #2c5bb8;
+  --ds-color-info-dot: #3b6fd4;
+  --ds-color-info-tint: #ebf1fc;
+  --ds-color-neutral-dot: #c4c4c4;
+
+  /* Identity tints (groups, favorites) */
+  --ds-color-tint-blue-bg: #e8eef9;
+  --ds-color-tint-blue-fg: #2f55a4;
+  --ds-color-tint-green-bg: #e6f2ec;
+  --ds-color-tint-green-fg: #1f6e47;
+  --ds-color-tint-purple-bg: #efeaf8;
+  --ds-color-tint-purple-fg: #5b3fa0;
+  --ds-color-tint-amber-bg: #f7efdf;
+  --ds-color-tint-amber-fg: #7a5200;
+
+  /* Chart palette */
+  --ds-color-chart-current: #171717;
+  --ds-color-chart-comparison: #a8a8a8;
+  --ds-color-chart-history: #d6d6d5;
+  --ds-color-chart-target: #cfcfce;
+  --ds-color-chart-axis-line: #e4e4e3;
+
+  /* Radius */
+  --ds-radius-xs: 5px; /* kbd, favorite mark */
+  --ds-radius-sm: 6px; /* tag, segment */
+  --ds-radius-btn-sm: 7px; /* small button */
+  --ds-radius-md: 8px; /* button, input, nav */
+  --ds-radius-qa: 9px; /* quick action */
+  --ds-radius-lg: 10px; /* option, toast */
+  --ds-radius-xl: 12px; /* card */
+  --ds-radius-2xl: 14px; /* dialog */
+
+  /* Elevation */
+  --ds-shadow-segment: 0 1px 2px rgb(0 0 0 / 0.06), 0 0 0 1px rgb(0 0 0 / 0.04);
+  --ds-shadow-popover: 0 8px 24px rgb(0 0 0 / 0.12);
+  --ds-shadow-drawer: 0 8px 32px rgb(0 0 0 / 0.08);
+  --ds-shadow-dialog: 0 24px 64px rgb(0 0 0 / 0.14);
+
+  /* Layout */
+  --ds-sidebar-width: 252px;
+  --ds-sidebar-rail-width: 64px;
+  --ds-topbar-height: 52px;
+  --ds-content-max-width: 1360px;
+
+  /* Motion */
+  --ds-duration-base: 160ms;
+  --ds-duration-enter: 180ms;
+  --ds-ease-base: ease;
+  --ds-ease-enter: ease-out;
+}
