@@ -1,0 +1,19 @@
+name: panel-phase02
+services:
+  postgres:
+    image: postgres:17.10-bookworm
+    environment:
+      POSTGRES_USER: panel_bootstrap
+      POSTGRES_PASSWORD: ${PANEL_LOCAL_DB_PASSWORD:?Yerel sentetik DB parolası gerekli}
+      POSTGRES_DB: postgres
+    ports:
+      - "127.0.0.1:55432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U panel_bootstrap -d postgres"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    volumes:
+      - panel_pg:/var/lib/postgresql/data
+volumes:
+  panel_pg:

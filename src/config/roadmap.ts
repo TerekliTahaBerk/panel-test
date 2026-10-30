@@ -19,4 +19,4 @@ export const ROADMAP = [
 
 export type RoadmapPhaseId = (typeof ROADMAP)[number]["id"];
 
-export const CURRENT_PHASE: RoadmapPhaseId = "00";
+export const CURRENT_PHASE: RoadmapPhaseId = "02";

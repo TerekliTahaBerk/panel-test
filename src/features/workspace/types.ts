@@ -1,9 +1,8 @@
 import type { WorkspaceRole } from "@/types/roles";
 
 /**
- * What the shell needs to know about the current workspace. In Phase 01 this
- * is resolved on the server from the session and organization membership;
- * in the preview it comes from demonstration data.
+ * Shell için sunum DTO'su. Faz 02 sunucu projection'ı hazırlanmıştır;
+ * gerçek kimlik doğrulama Faz 03'te bağlanır. Bu nesne yetki kanıtı değildir.
  */
 export interface WorkspaceContext {
   role: WorkspaceRole;

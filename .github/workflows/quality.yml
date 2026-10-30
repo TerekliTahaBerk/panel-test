@@ -56,3 +56,33 @@ jobs:
             playwright-report/
             test-results/
           retention-days: 7
+
+  database:
+    name: PostgreSQL tenant security
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17.10-bookworm
+        env:
+          POSTGRES_USER: panel_bootstrap
+          POSTGRES_PASSWORD: synthetic-ci-only
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U panel_bootstrap -d postgres"
+          --health-interval 2s --health-timeout 3s --health-retries 30
+    env:
+      LOCAL_DATABASE_URL: postgresql://panel_bootstrap:synthetic-ci-only@127.0.0.1:5432/panel_local_dev
+      TEST_DATABASE_URL: postgresql://panel_bootstrap:synthetic-ci-only@127.0.0.1:5432/panel_ci_${{ github.run_id }}_${{ github.run_attempt }}_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run db:local:prepare
+      - run: npm run db:test:prepare
+      - run: npm run test:integration

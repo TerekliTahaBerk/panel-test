@@ -20,3 +20,6 @@ blob-report/
 .DS_Store
 *.tsbuildinfo
 npm-debug.log*
+
+# Generated Prisma client
+src/server/generated/

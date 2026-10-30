@@ -1,102 +1,68 @@
 # Eğitim Platformu
 
-An independent, subscription-based education management SaaS for individual teachers,
-private tutors, coaches, tutoring centers, private institutions and high schools.
+Bireysel öğretmenler, özel ders verenler, koçlar, eğitim merkezleri ve okullar için bağımsız,
+abonelik temelli eğitim yönetim SaaS'ı. Tenant sınırı kurumdur; kullanıcı farklı kurumlarda
+farklı üyelik/roller taşıyabilir. Gerçek kimlik doğrulama Faz 03'te gelir.
 
-Customer-facing roles: **Organization Administrator**, **Teacher**, **Student**, **Parent**.
-An internal **Super Admin** role operates the platform. Each organization's data is strictly
-isolated (multi-tenant infrastructure arrives in Phase 02, authentication in Phase 03).
+Online Dershanem deposu, veritabanı ve servisleri bu projeye bağlı değildir ve değiştirilmez.
 
-> This project is fully independent from Online Dershanem. That product is a read-only
-> reference for later phases; its repository, database and deployments are never modified.
+## Faz durumu
 
-## Phase status
+| Faz   | Kapsam                                                                             | Durum                                                                                 |
+| ----- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| 00    | Temel uygulama ve tasarım entegrasyonu                                             | Tamamlandı — PR #1/#2 merged                                                          |
+| 01    | Mimari ve alan modelleme                                                           | Tamamlandı — [PR #3](https://github.com/TerekliTahaBerk/panel-test/pull/3) merged     |
+| 02    | Çok kiracılı altyapı                                                               | Tamamlandı; PR #4 incelemede — [uygulama ve kabul kanıtları](docs/phases/phase-02.md) |
+| 03–11 | Kimlik/yetki, ekranlar, onboarding, akademik alanlar, billing, operasyon ve üretim | Başlamadı                                                                             |
 
-Roadmap and scopes: [docs/phases/README.md](docs/phases/README.md).
+Tam yol haritası: [docs/phases/README.md](docs/phases/README.md).
 
-| Phase | Title                            | Status                                                                 |
-| ----- | -------------------------------- | ---------------------------------------------------------------------- |
-| 00    | Foundation & Design Integration  | **In review** (see [docs/phases/phase-00.md](docs/phases/phase-00.md)) |
-| 01    | Architecture & Domain Modeling   | Not started                                                            |
-| 02    | Multi-Tenant Infrastructure      | Not started                                                            |
-| 03    | Authentication & Permissions     | Not started                                                            |
-| 04    | Complete Frontend Implementation | Not started                                                            |
-| 05    | Organization Onboarding          | Not started                                                            |
-| 06    | Academic Management              | Not started                                                            |
-| 07    | Student & Parent Services        | Not started                                                            |
-| 08    | Exams & Analytics                | Not started                                                            |
-| 09    | Subscriptions & Billing          | Not started                                                            |
-| 10    | Super Admin & Operations         | Not started                                                            |
-| 11    | Security, QA & Production Launch | Not started                                                            |
+## Teknoloji ve başlatma
 
-## Stack
-
-- Next.js 16 (App Router, Turbopack) · React 19 · TypeScript 5.9 (strict)
-- Tailwind CSS 4 with CSS-variable design tokens · Geist Sans (self-hosted via `geist`)
-- Radix UI primitives (dropdown, tooltip, tabs, dialog, toast) · cmdk · Lucide icons
-- Zod for validation contracts
-- ESLint (next/core-web-vitals + typescript) · Prettier
-- Vitest + React Testing Library · Playwright
-
-## Local setup
-
-Requires Node.js ≥ 22.12 and npm 10.
+Next.js 16.4.3 / React 19.3.1 / TypeScript 5.9.3; Tailwind 4, Geist, Radix ve mevcut
+tasarım sistemi korunur. PostgreSQL 17.10 / Prisma 7.10.1 / pg 8.23.1:
+[sürüm kararı](docs/decisions/ADR-0009.md). Node 22.12+ gerekir.
 
 ```bash
 npm ci
 npm run dev
 ```
 
-Open <http://localhost:3000/preview/admin>.
+Demo: [localhost preview](http://localhost:3000/preview/admin). Production'da preview
+ENABLE_PREVIEW_ROUTES=true değilse 404 döner. Bu ayar kimlik veya tenant erişimi vermez.
+`/app/[orgSlug]` gerçek adapter gelene kadar 401/no-store döndürür; login/onboarding yoktur.
+`.env.example` yalnız placeholder içerir; DB bağlantısı olmadan build/preview çalışır.
 
-### Environment
+## Komutlar
 
-Copy `.env.example` to `.env.local` if you need to change anything. The only variable in
-Phase 00 is `ENABLE_PREVIEW_ROUTES`: preview routes are always on in `next dev` and return
-404 in production builds unless it is set to `true`.
+| Komut                                     | Açıklama                                                                 |
+| ----------------------------------------- | ------------------------------------------------------------------------ |
+| `npm run dev`                             | Geliştirme sunucusu                                                      |
+| `npm run build` / `npm start`             | Üretim derlemesi / sunucu                                                |
+| `npm run lint` / `npm run typecheck`      | Kod ve tip denetimi                                                      |
+| `npm run format` / `npm run format:check` | Biçimlendirme / kontrol                                                  |
+| `npm test`                                | Unit/component testleri                                                  |
+| `npm run test:e2e`                        | Production build üzerinde preview ve workspace sınırı testleri           |
+| `npm run db:up` / `db:ready` / `db:down`  | İzole Docker PostgreSQL başlat / kontrol / durdur                        |
+| `npm run db:local:prepare`                | Sabit panel_local_dev geliştirme DB'si + roller + migration              |
+| `npm run db:test:prepare`                 | Yeni, doğrulanmış test DB'si + roller + migration; mevcut DB resetlenmez |
+| `npm run db:generate` / `db:migrate`      | Prisma Client üret / DIRECT_URL üzerinden migrate deploy                 |
+| `npm run test:integration`                | Gerçek PostgreSQL izolasyon/rol/provisioning testleri                    |
+| `npm run validate`                        | Lint + tip + unit + build                                                |
 
-## Commands
+DB komutları için önce [yerel kurulum](docs/operations/local-database.md) izlenmelidir.
+Test URL'si runtime URL'sinden ayrıdır; sentetik fixture dışında veri kullanılmaz.
 
-| Command                           | What it does                                                                                    |
-| --------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `npm run dev`                     | Development server                                                                              |
-| `npm run build` / `npm start`     | Production build / serve                                                                        |
-| `npm run lint`                    | ESLint                                                                                          |
-| `npm run typecheck`               | `tsc --noEmit`                                                                                  |
-| `npm run format` / `format:check` | Prettier                                                                                        |
-| `npm test`                        | Vitest unit and component tests                                                                 |
-| `npm run test:e2e`                | Playwright smoke tests (needs `npm run build` first; starts `next start` with previews enabled) |
-| `npm run validate`                | lint + typecheck + unit + build                                                                 |
+## Kaynak ve belgeler
 
-Playwright reference screenshots: `UPDATE_REFERENCE_SCREENSHOTS=1 npm run test:e2e` writes
-them to `docs/design/screenshots/`.
+- `src/features`, `src/components`, `src/styles`: mevcut sunum ve tasarım sistemi.
+- `prisma/schema.prisma`, `prisma/migrations`: yedi çekirdek model ve kanonik SQL.
+- `src/server/db`, `src/server/tenant`, `src/server/modules`: server-only DAL ve sözleşmeler.
+- `tests/unit`, `tests/integration`, `tests/e2e`: uygulama ve gerçek DB güvenlik testleri.
+- [Mimari](docs/architecture/overview.md), [tenant bağlamı](docs/architecture/tenant-context.md),
+  [RLS](docs/architecture/rls-implementation.md), [provisioning](docs/architecture/provisioning-implementation.md),
+  [test matrisi](docs/security/tenant-isolation-test-matrix.md), [migration işletimi](docs/operations/migrations.md).
 
-## Project structure
-
-```
-src/
-  app/                    routes (App Router)
-    preview/              gated demo routes (fictional data)
-      admin/              Organization Administrator dashboard preview
-  components/
-    ui/                   design-system primitives (Button, Badge, Tabs, Dropdown, ...)
-    layout/               AppShell, Topbar, mobile drawer, shell state
-    navigation/           Sidebar, breadcrumbs, command palette, notifications
-  config/                 app config, preview gating, role navigation
-  features/
-    dashboard/            admin dashboard components, types, mock data
-    workspace/            workspace context type + preview workspace
-  hooks/                  shared hooks (demo-action notices)
-  lib/                    cn(), formatting
-  styles/tokens.css       design tokens (single source of truth)
-  types/                  shared domain types (roles)
-docs/                     architecture, design map, phases, ADRs
-tests/unit, tests/e2e     Vitest and Playwright suites
-```
-
-See [docs/architecture/overview.md](docs/architecture/overview.md) for boundaries and
-[docs/design/reference-map.md](docs/design/reference-map.md) for the prototype inventory.
-
-## Faz 01 mimari belgeleri
-
-Çok kiracılı veri mimarisi, kimlik/kurum üyeliği ayrımı, akademik model ve izin sözleşmeleri Türkçe olarak [Faz 01 raporunda](docs/phases/phase-01.md) listelenir. Uygulama planları: [Faz 02 — altyapı](docs/phases/phase-02-handoff.md) ve [Faz 03 — kimlik ve yetkiler](docs/phases/phase-03-handoff.md). Bu faz yalnız dokümantasyondur; veritabanı, kimlik doğrulama veya API uygulaması eklenmemiştir.
+Akademik modeller, gerçek auth/MFA, canlı kurum kurulumu, ödeme ve production deployment
+bu fazın kapsamı dışındadır. CI, production credential kullanmadan ayrı PostgreSQL service
+container üzerinde gerçek güvenlik testlerini çalıştırır; mock'a geri düşmez.

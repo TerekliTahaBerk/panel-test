@@ -6,9 +6,9 @@ entries (`src/config/navigation.ts`) reference these ids. Each phase gets its ow
 
 | Phase | Title                            | Scope (summary)                                                                                                                | Status      |
 | ----- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ----------- |
-| 00    | Foundation & Design Integration  | App scaffold, design tokens, UI primitives, app shell, admin dashboard preview, CI                                             | In review   |
-| 01    | Architecture & Domain Modeling   | Validate ADR-0001 assumptions; domain model (User, Organization, Membership, Branch, Role, Student, Teacher, Group, ...); ADRs | Not started |
-| 02    | Multi-Tenant Infrastructure      | Database, organization scoping of every tenant-owned row, workspace routing (`/app/[orgSlug]`), organization switching         | Not started |
+| 00    | Foundation & Design Integration  | App scaffold, design tokens, UI primitives, app shell, admin dashboard preview, CI                                             | Completed   |
+| 01    | Architecture & Domain Modeling   | Validate ADR-0001 assumptions; domain model (User, Organization, Membership, Branch, Role, Student, Teacher, Group, ...); ADRs | Completed   |
+| 02    | Multi-Tenant Infrastructure      | Database, organization scoping of every tenant-owned row, workspace routing (`/app/[orgSlug]`), organization switching         | Completed   |
 | 03    | Authentication & Permissions     | Sign-in (`/giris`), sessions, memberships and roles, server-side authorization, account settings, sign-out                     | Not started |
 | 04    | Complete Frontend Implementation | Every screen in the approved prototype as real routes and components (role dashboards, management screens, calendar, ...)      | Not started |
 | 05    | Organization Onboarding          | Organization setup flow (`/kurulum`), organization profile and settings, inviting members                                      | Not started |
