@@ -1,3 +1,87 @@
-# Eğitim Platformu (panel-test)
+# Eğitim Platformu
 
-Multi-tenant education management SaaS. Bootstrap commit; Phase 00 lands on a feature branch.
+An independent, subscription-based education management SaaS for individual teachers,
+private tutors, coaches, tutoring centers, private institutions and high schools.
+
+Customer-facing roles: **Organization Administrator**, **Teacher**, **Student**, **Parent**.
+An internal **Super Admin** role operates the platform. Each organization's data is strictly
+isolated (multi-tenancy arrives in Phase 01).
+
+> This project is fully independent from Online Dershanem. That product is a read-only
+> reference for later phases; its repository, database and deployments are never modified.
+
+## Phase status
+
+| Phase | Scope                                                          | Status                                                            |
+| ----- | -------------------------------------------------------------- | ----------------------------------------------------------------- |
+| 00    | Frontend foundation, design system, admin dashboard preview    | **Done** (see [docs/phases/phase-00.md](docs/phases/phase-00.md)) |
+| 01    | Auth, organizations, memberships, server-side authorization    | Planned                                                           |
+| 02+   | Students, teachers, groups, calendar, homework, exams, billing | Planned                                                           |
+
+## Stack
+
+- Next.js 16 (App Router, Turbopack) · React 19 · TypeScript 5.9 (strict)
+- Tailwind CSS 4 with CSS-variable design tokens · Geist Sans (self-hosted via `geist`)
+- Radix UI primitives (dropdown, tooltip, tabs, dialog, toast) · cmdk · Lucide icons
+- Zod for validation contracts
+- ESLint (next/core-web-vitals + typescript) · Prettier
+- Vitest + React Testing Library · Playwright
+
+## Local setup
+
+Requires Node.js ≥ 22.12 and npm 10.
+
+```bash
+npm ci
+npm run dev
+```
+
+Open <http://localhost:3000/preview/admin>.
+
+### Environment
+
+Copy `.env.example` to `.env.local` if you need to change anything. The only variable in
+Phase 00 is `ENABLE_PREVIEW_ROUTES`: preview routes are always on in `next dev` and return
+404 in production builds unless it is set to `true`.
+
+## Commands
+
+| Command                           | What it does                                                                                    |
+| --------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `npm run dev`                     | Development server                                                                              |
+| `npm run build` / `npm start`     | Production build / serve                                                                        |
+| `npm run lint`                    | ESLint                                                                                          |
+| `npm run typecheck`               | `tsc --noEmit`                                                                                  |
+| `npm run format` / `format:check` | Prettier                                                                                        |
+| `npm test`                        | Vitest unit and component tests                                                                 |
+| `npm run test:e2e`                | Playwright smoke tests (needs `npm run build` first; starts `next start` with previews enabled) |
+| `npm run validate`                | lint + typecheck + unit + build                                                                 |
+
+Playwright reference screenshots: `UPDATE_REFERENCE_SCREENSHOTS=1 npm run test:e2e` writes
+them to `docs/design/screenshots/`.
+
+## Project structure
+
+```
+src/
+  app/                    routes (App Router)
+    preview/              gated demo routes (fictional data)
+      admin/              Organization Administrator dashboard preview
+  components/
+    ui/                   design-system primitives (Button, Badge, Tabs, Dropdown, ...)
+    layout/               AppShell, Topbar, mobile drawer, shell state
+    navigation/           Sidebar, breadcrumbs, command palette, notifications
+  config/                 app config, preview gating, role navigation
+  features/
+    dashboard/            admin dashboard components, types, mock data
+    workspace/            workspace context type + preview workspace
+  hooks/                  shared hooks (demo-action notices)
+  lib/                    cn(), formatting
+  styles/tokens.css       design tokens (single source of truth)
+  types/                  shared domain types (roles)
+docs/                     architecture, design map, phases, ADRs
+tests/unit, tests/e2e     Vitest and Playwright suites
+```
+
+See [docs/architecture/overview.md](docs/architecture/overview.md) for boundaries and
+[docs/design/reference-map.md](docs/design/reference-map.md) for the prototype inventory.
